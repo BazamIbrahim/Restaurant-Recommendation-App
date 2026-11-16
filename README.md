@@ -29,6 +29,7 @@ For planning, "Ireland" means the Republic of Ireland, with Dublin as its first 
 
 - [Product requirements and coverage checklist](docs/product-requirements.md)
 - [Data sources and reuse constraints](docs/data-sources.md)
+- [Europe country coverage register](docs/europe-country-coverage.csv)
 
 ## Data handling boundary
 
