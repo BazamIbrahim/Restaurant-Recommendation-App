@@ -15,6 +15,18 @@ This is a candidate inventory, not blanket authorization to copy every publicly 
 | Restaurant menu evidence | Restaurant-owned websites/menus and direct restaurant submissions | Dish names, descriptions, ingredients, prices, hours | Respect site terms and copyright; get permission or use a documented feed/partnership. Prefer restaurant-submitted data or outbound links over copying menus wholesale. |
 | NEMO first-party quality data | User corrections and optional restaurant submissions | Updates to hours, dish availability, accessibility notes, and listing corrections | Keep provenance, consent, moderation, abuse controls, and deletion/reporting workflows. Separate first-party user content from provider data. |
 
+## Ireland-first data findings
+
+- [Data.gov.ie](https://data.gov.ie/) is Ireland's official open-data portal. Search results identify tourism and public-sector datasets, but this initial review did not establish a complete nationwide restaurant/menu directory. Check individual dataset licenses, freshness, and coverage before use.
+- [Fáilte Ireland Open Data](https://www.failteireland.ie/en/info/open-data) is useful tourism context. Its developer portal lists accommodation, activities, and attractions; the activities/attractions data covers businesses registered to appear on DiscoverIreland.ie and VisitDublin.com. The Activities and Attractions dataset is listed under CC BY 4.0. Treat it as supplementary visitor information, not as a complete restaurant directory or menu source. The free Open Data API has usage limits; the Open Data Plus API requires a subscription.
+- [OpenStreetMap](https://www.openstreetmap.org/copyright) is a candidate open source for restaurant and cafe locations across Ireland. Coverage depends on local contributions, and ODbL attribution/database conditions apply. It does not supply authoritative menu availability, ratings, or reviews.
+- Google Places needs special review for an Ireland launch. Google documents different EEA terms for projects with an EEA billing address. Those terms restrict use of most Places API content "with any map" (with specified exceptions such as place IDs and coordinates). NEMO's map-and-restaurant-results flow must be checked against the exact current agreement before choosing Google Places.
+- No current nationwide, openly reusable food-inspection outcome feed was verified in this review. Do not present inspection or hygiene scores unless an authoritative source and reuse right are confirmed.
+
+### Ireland pilot source direction
+
+Use OSM as the first open-data candidate for map/place geometry, then verify its actual coverage in the selected pilot area. Use restaurant-submitted or permissioned menus to establish dish-level evidence. Evaluate a licensed place-data provider for ratings/reviews as a separately attributed, live source. Keep Fáilte Ireland attractions and activities as optional tourism context. Avoid depending on scraped directories or on public visibility alone as permission to reuse.
+
 ## Suggested source strategy
 
 1. **Pilot with one licensed place source plus one map/routing option.** Compare coverage, costs, and contractual rights in the chosen city before picking.
@@ -51,7 +63,11 @@ Avoid storing raw third-party review text, review photos, or provider map conten
 ## Official references
 
 - [Google Places API policies and attributions](https://developers.google.com/maps/documentation/places/web-service/policies)
+- [Google Places EEA adjustments](https://developers.google.com/maps/comms/eea/places)
 - [OpenStreetMap attribution guidance](https://osmfoundation.org/wiki/Attribution_Guidelines)
+- [Ireland's open-data portal](https://data.gov.ie/)
+- [Fáilte Ireland Open Data](https://www.failteireland.ie/en/info/open-data)
+- [Fáilte Ireland Activities and Attractions dataset](https://data.gov.ie/dataset/tourism-activities-and-attractions)
 - [Foursquare Places API pricing](https://foursquare.com/pricing/)
 - [Foursquare Places API license agreement](https://foursquare.com/legal/terms/apilicenseagreement/)
 - [Yelp Fusion API getting started](https://docs.developer.yelp.com/docs/getting-started)
