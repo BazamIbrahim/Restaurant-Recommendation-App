@@ -6,9 +6,10 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 
 ## Market rollout
 
-- **First market:** Republic of Ireland, beginning in Dublin.
-- **Coverage sequence:** for each country, launch in the capital city first; validate restaurant/menu coverage and matching quality; then expand to other major areas in that country.
-- **Next markets:** after Ireland, repeat the capital-first sequence one European country at a time, with a coverage, localization, and data-rights review for each.
+- **Data discovery scope:** all European countries. Discover and use public datasets and APIs when their licenses/terms allow NEMO's intended use. Track coverage by country and by data type. If a country or field has no reusable source, mark it unavailable rather than inventing or scraping data.
+- **First product validation market:** Republic of Ireland, beginning in Dublin.
+- **User-facing coverage sequence:** begin each country's experience in its capital city, validate place/menu coverage and matching quality, then expand to that country's other major areas.
+- **Data ingestion scope:** public-data research and ingestion can cover multiple European countries from the start; Ireland-first describes the first end-to-end product validation, not a limit on data discovery.
 - **Boundary:** Northern Ireland is part of the UK, with separate data and regulatory considerations. Include it only if the intended first launch is across the whole island.
 
 ## Primary user journey
@@ -96,6 +97,7 @@ The pilot should prove photo/text dish intent → useful nearby matches → trus
 ## Decisions still needed
 
 - Which Irish areas to add after Dublin, and what qualifies as a major area in each country
+- Country coverage quality thresholds for enabling each capital and area
 - Mobile, web, or both for the first client
 - Preferred implementation stack and hosting constraints
 - Initial languages
