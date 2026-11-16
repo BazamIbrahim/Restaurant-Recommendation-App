@@ -23,9 +23,13 @@ This is a candidate inventory, not blanket authorization to copy every publicly 
 - Google Places needs special review for an Ireland launch. Google documents different EEA terms for projects with an EEA billing address. Those terms restrict use of most Places API content "with any map" (with specified exceptions such as place IDs and coordinates). NEMO's map-and-restaurant-results flow must be checked against the exact current agreement before choosing Google Places.
 - No current nationwide, openly reusable food-inspection outcome feed was verified in this review. Do not present inspection or hygiene scores unless an authoritative source and reuse right are confirmed.
 
+### Capital-first country rollout
+
+For each new country, start source and coverage evaluation in the capital city. Record restaurant/place coverage, menu evidence, freshness, language support, and provider rights there. Once the capital experience meets the product's quality bar, expand coverage to the country's other major areas. Repeat this review separately for every country; do not assume data rights, coverage, language needs, or provider suitability transfer across borders.
+
 ### Ireland pilot source direction
 
-Use OSM as the first open-data candidate for map/place geometry, then verify its actual coverage in the selected pilot area. Use restaurant-submitted or permissioned menus to establish dish-level evidence. Evaluate a licensed place-data provider for ratings/reviews as a separately attributed, live source. Keep Fáilte Ireland attractions and activities as optional tourism context. Avoid depending on scraped directories or on public visibility alone as permission to reuse.
+Use OSM as the first open-data candidate for map/place geometry in Dublin, then verify its actual coverage. Use restaurant-submitted or permissioned menus to establish dish-level evidence. Evaluate a licensed place-data provider for ratings/reviews as a separately attributed, live source. Keep Fáilte Ireland attractions and activities as optional tourism context. After validating Dublin, expand to Ireland's other major areas. Avoid depending on scraped directories or on public visibility alone as permission to reuse.
 
 ## Suggested source strategy
 
