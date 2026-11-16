@@ -12,7 +12,7 @@ NEMO helps travelers find food they miss or want to try. A traveler uploads or t
 
 ## Initial product scope
 
-Ireland is NEMO's first market. For each country, begin coverage in its capital city, validate coverage, matching quality, and the user journey, then expand to the country's other major areas. After Ireland, repeat this capital-first rollout for additional European countries.
+NEMO's data plan is Europe-wide: use reusable public sources wherever they provide useful coverage, and leave countries or data types unsupported when there is no source NEMO can lawfully use. Ireland is the first product validation market, beginning in Dublin. For every country, begin user-facing coverage in its capital, validate data quality and the user journey, then expand to its other major areas. This capital-first product rollout does not limit public-data discovery or ingestion to Ireland.
 
 Validate the core flow:
 
