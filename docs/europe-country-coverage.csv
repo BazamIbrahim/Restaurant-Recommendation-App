@@ -1,0 +1,52 @@
+country,iso2,capital,scope_basis,place_data_status,map_data_status,menu_data_status,ratings_reviews_status,license_review_status,launch_status
+Albania,AL,Tirana,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Andorra,AD,Andorra la Vella,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Armenia,AM,Yerevan,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Austria,AT,Vienna,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Azerbaijan,AZ,Baku,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Belarus,BY,Minsk,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Belgium,BE,Brussels,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Bosnia and Herzegovina,BA,Sarajevo,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Bulgaria,BG,Sofia,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Croatia,HR,Zagreb,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Cyprus,CY,Nicosia,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Czechia,CZ,Prague,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Denmark,DK,Copenhagen,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Estonia,EE,Tallinn,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Finland,FI,Helsinki,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+France,FR,Paris,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Georgia,GE,Tbilisi,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Germany,DE,Berlin,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Greece,GR,Athens,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Holy See (Vatican City),VA,Vatican City,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Hungary,HU,Budapest,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Iceland,IS,Reykjavik,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Ireland,IE,Dublin,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Italy,IT,Rome,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Kazakhstan,KZ,Astana,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Kosovo,XK,Pristina,extended Europe market (user-assigned code),not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Latvia,LV,Riga,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Liechtenstein,LI,Vaduz,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Lithuania,LT,Vilnius,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Luxembourg,LU,Luxembourg,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Malta,MT,Valletta,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Moldova,MD,Chisinau,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Monaco,MC,Monaco,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Montenegro,ME,Podgorica,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Netherlands,NL,Amsterdam,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+North Macedonia,MK,Skopje,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Norway,NO,Oslo,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Poland,PL,Warsaw,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Portugal,PT,Lisbon,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Romania,RO,Bucharest,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Russia,RU,Moscow,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+San Marino,SM,San Marino,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Serbia,RS,Belgrade,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Slovakia,SK,Bratislava,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Slovenia,SI,Ljubljana,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Spain,ES,Madrid,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Sweden,SE,Stockholm,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Switzerland,CH,Bern,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Turkey,TR,Ankara,extended Europe market,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+Ukraine,UA,Kyiv,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
+United Kingdom,GB,London,UN M49 Europe,not_audited,not_audited,not_verified,not_verified,pending,not_enabled
