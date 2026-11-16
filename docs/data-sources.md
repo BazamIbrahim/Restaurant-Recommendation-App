@@ -4,6 +4,8 @@ This is a candidate inventory, not blanket authorization to copy every publicly 
 
 NEMO's discovery scope is all European countries. A country or data field is enabled only when a useful source exists and its license/terms allow the intended use. Keep a coverage registry by country and field; mark unsupported coverage clearly when no suitable source is available. Publicly viewable, downloadable, and legally reusable are different conditions.
 
+The initial market inventory is in [europe-country-coverage.csv](europe-country-coverage.csv). It uses the UN M49 Europe grouping and separately tracks extended European markets that are sometimes grouped outside Europe in statistical classifications. All source-coverage values start as unverified until we measure real dataset coverage; this avoids treating global availability as proof of local completeness.
+
 ## Candidate sources
 
 | Need | Candidate source | Useful information | Reuse / operational notes |
