@@ -56,6 +56,8 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 ### Restaurant details, ratings, and reviews
 
 - [ ] Decide whether NEMO displays provider ratings/reviews live, links out, or builds its own first-party review system.
+- [ ] If using Google reviews, request rating/count/reviews through the official Places API and display the required author attribution and source links; do not scrape reviews or store them as NEMO-owned content.
+- [ ] For an EEA-billed Google Maps project, verify whether Places UI Kit supports the desired map and result experience; standard Places API content has EEA map-display restrictions.
 - [ ] Keep provider content separate by source; never merge ratings into a misleading NEMO-wide score.
 - [ ] Show rating scale, review count, source, and freshness when available.
 - [ ] Design stale listing, duplicate listing, closed business, and correction workflows.
