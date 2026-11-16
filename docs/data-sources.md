@@ -2,11 +2,14 @@
 
 This is a candidate inventory, not blanket authorization to copy every publicly accessible dataset. Before integration, record the provider, fields used, license/contract, attribution, retention/caching rules, region coverage, refresh method, and owner for every source. Re-check live terms before launch because they can change.
 
+NEMO's discovery scope is all European countries. A country or data field is enabled only when a useful source exists and its license/terms allow the intended use. Keep a coverage registry by country and field; mark unsupported coverage clearly when no suitable source is available. Publicly viewable, downloadable, and legally reusable are different conditions.
+
 ## Candidate sources
 
 | Need | Candidate source | Useful information | Reuse / operational notes |
 |---|---|---|---|
 | Open map and points of interest | [OpenStreetMap (OSM)](https://www.openstreetmap.org/copyright) | Road geometry, addresses and mapped amenities such as restaurants where contributors have added them | OSM data is under ODbL and requires attribution; database use and derived database obligations need review. Public tile and routing servers have separate usage policies; do not assume the community servers are a production backend. |
+| Global open place directory | [Foursquare Open Source Places](https://docs.foursquare.com/data-products/docs/access-fsq-os-places) | Global POIs including restaurants; names, coordinates, addresses, locality, country, categories, freshness/closure dates, phone, and website where available | Free dataset under Apache 2.0 with required Foursquare attribution. Access is through the Places Portal/Iceberg catalog using an account and token. Assess per-country coverage/freshness. It does not provide menus or a review corpus. |
 | Commercial place search/details | [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) | Place search, details, some photos and reviews, depending on fields and availability | Google requires attribution and has restrictions on caching/storing Places content. Place results shown on a map have display requirements. Use the official API and read current terms; do not create a permanent copy in NEMO's database by default. |
 | Commercial place catalog | [Foursquare Places](https://foursquare.com/products/places/) | Place search/details and, on applicable endpoints, photos/tips | Pay-as-you-go pricing and API license terms apply. Confirm permitted storage, derived data, and review/photo usage for NEMO's exact plan. |
 | Open place directory | [Foursquare Open Source Places](https://docs.foursquare.com/data-products/docs/access-fsq-os-places) | Business names, coordinates, address, locality, country, categories, refreshed/closed dates, phone, and website where available | Free dataset under Apache 2.0 with Foursquare attribution requirements. Access is through the Foursquare Places Portal/Iceberg catalog (account and access token required). It is a POI foundation, not a source of restaurant menus, ratings, or reviews. Verify Ireland coverage and freshness before relying on it. |
@@ -25,13 +28,21 @@ This is a candidate inventory, not blanket authorization to copy every publicly 
 - Google Places needs special review for an Ireland launch. Google documents different EEA terms for projects with an EEA billing address. Those terms restrict use of most Places API content "with any map" (with specified exceptions such as place IDs and coordinates). NEMO's map-and-restaurant-results flow must be checked against the exact current agreement before choosing Google Places.
 - No current nationwide, openly reusable food-inspection outcome feed was verified in this review. Do not present inspection or hygiene scores unless an authoritative source and reuse right are confirmed.
 
+## Europe-wide public-data strategy
+
+- Use Foursquare Open Source Places and OSM as candidate baseline datasets for every European country they cover. Measure actual coverage, freshness, duplicates, and closure quality by country before enabling a country in the app.
+- Use each country's official open-data portal and tourism/municipal sources to add local data. Read each dataset's license and update schedule; national portals aggregate publishers and do not guarantee a common restaurant schema or complete restaurant coverage.
+- Use Wikidata's CC0 structured data and a NEMO-reviewed taxonomy for dish/cuisine names, alternate spellings, and multilingual aliases. Do not treat a taxonomy as evidence that a restaurant serves a dish.
+- There is no single verified, reusable public dataset covering menus, reviews, and ratings across Europe. Keep menu evidence unavailable unless permissioned restaurant data or another licensed source supports it. For ratings/reviews, use an authorized provider integration or NEMO's own moderated reviews; never scrape review sites.
+- Add a country/region record to a coverage registry with supported fields, source IDs, license/terms, attribution, freshness, and quality status. Enable only country-field combinations that pass the source and quality checks; otherwise return a clear no-coverage state.
+
 ### Capital-first country rollout
 
-For each new country, start source and coverage evaluation in the capital city. Record restaurant/place coverage, menu evidence, freshness, language support, and provider rights there. Once the capital experience meets the product's quality bar, expand coverage to the country's other major areas. Repeat this review separately for every country; do not assume data rights, coverage, language needs, or provider suitability transfer across borders.
+For user-facing rollout in each country, start in its capital city. Data-source discovery can happen across Europe in parallel. Record restaurant/place coverage, menu evidence, freshness, language support, and provider rights for each country and area. Once a capital experience meets the product's quality bar, expand coverage to the country's other major areas. Repeat rights and quality checks per country; do not assume they transfer across borders.
 
 ### Ireland pilot source direction
 
-Compare Foursquare Open Source Places with OSM in Dublin as open, attributable sources for base restaurant listings and map geometry. Measure coverage, freshness, duplicate rate, and closed-place errors before selecting the primary seed. Use restaurant-submitted or permissioned menus to establish dish-level evidence. For ratings/reviews, evaluate a separately licensed live provider or build NEMO's own clearly labeled review system; the open datasets above do not supply the needed review corpus. Keep Fáilte Ireland attractions and activities as optional tourism context. After validating Dublin, expand to Ireland's other major areas. Avoid depending on scraped directories or on public visibility alone as permission to reuse.
+Compare Foursquare Open Source Places with OSM in Dublin as open, attributable sources for base listings and map geometry, then run the same coverage audit across other European capitals in parallel. Measure coverage, freshness, duplicate rate, and closure errors before enabling a country. Use restaurant-submitted or permissioned menus for dish-level evidence. For ratings/reviews, evaluate a separately licensed live provider or build NEMO's own clearly labeled review system; the open datasets above do not supply the needed review corpus. Keep Fáilte Ireland attractions and activities as optional tourism context. Avoid depending on scraped directories or public visibility alone as permission to reuse.
 
 ## Suggested source strategy
 
