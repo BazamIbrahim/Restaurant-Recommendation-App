@@ -6,9 +6,9 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 
 ## Market rollout
 
-- **First market:** Republic of Ireland.
-- **Initial coverage:** choose a bounded Irish pilot area, measure restaurant/menu coverage, then expand coverage across Ireland.
-- **Next markets:** other European countries after the Irish experience and data operations are working reliably. Add countries one at a time, with a coverage and localization review for each.
+- **First market:** Republic of Ireland, beginning in Dublin.
+- **Coverage sequence:** for each country, launch in the capital city first; validate restaurant/menu coverage and matching quality; then expand to other major areas in that country.
+- **Next markets:** after Ireland, repeat the capital-first sequence one European country at a time, with a coverage, localization, and data-rights review for each.
 - **Boundary:** Northern Ireland is part of the UK, with separate data and regulatory considerations. Include it only if the intended first launch is across the whole island.
 
 ## Primary user journey
@@ -95,7 +95,7 @@ The pilot should prove photo/text dish intent → useful nearby matches → trus
 
 ## Decisions still needed
 
-- First Irish pilot city or region
+- Which Irish areas to add after Dublin, and what qualifies as a major area in each country
 - Mobile, web, or both for the first client
 - Preferred implementation stack and hosting constraints
 - Initial languages
