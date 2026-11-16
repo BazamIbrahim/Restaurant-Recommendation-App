@@ -12,7 +12,7 @@ NEMO helps travelers find food they miss or want to try. A traveler uploads or t
 
 ## Initial product scope
 
-Ireland is NEMO's first market. Expand to other European countries after validating coverage, matching quality, and the user journey in Ireland. The exact first Irish city is still to be chosen. Begin with a bounded launch area, then widen coverage across Ireland as data quality allows.
+Ireland is NEMO's first market. For each country, begin coverage in its capital city, validate coverage, matching quality, and the user journey, then expand to the country's other major areas. After Ireland, repeat this capital-first rollout for additional European countries.
 
 Validate the core flow:
 
@@ -23,7 +23,7 @@ Validate the core flow:
 
 Accounts, saved places, Google/Apple sign-in, broad multilingual coverage, and additional countries should follow the core validation unless a launch requirement makes them essential.
 
-For planning, "Ireland" means the Republic of Ireland. Northern Ireland has distinct country-level data and rules and should be planned as a separate UK market unless the launch scope is explicitly the whole island.
+For planning, "Ireland" means the Republic of Ireland, with Dublin as its first city. Northern Ireland has distinct country-level data and rules and should be planned as a separate UK market unless the launch scope is explicitly the whole island.
 
 ## Project planning
 
