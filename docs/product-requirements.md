@@ -93,6 +93,10 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 ### Operations and quality
 
 - [ ] Choose an application stack, hosting region, database, image storage, and deployment process.
+- [ ] Use a persistent managed database the project team controls, with secure app access, backup/restore, and a clear availability target.
+- [ ] For the initial no-budget build, evaluate a free database tier and its storage, availability, backup, and overage limits before relying on it.
+- [ ] Build a usable UI for the first vertical slice: food photo/text input, dish confirmation, restaurant results, and map or route handoff.
+- [ ] Keep the first database schema and UI limited to fields and flows needed by that slice; add broader country coverage incrementally.
 - [ ] Set service budgets and quotas for maps, place lookups, image inference, and storage.
 - [ ] Add structured logs, error reporting, uptime monitoring, and provider outage handling without logging secrets or raw photos.
 - [ ] Define backup/restore, incident response, and key rotation procedures.
