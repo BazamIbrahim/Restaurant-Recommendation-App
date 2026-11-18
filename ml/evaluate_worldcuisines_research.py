@@ -56,6 +56,14 @@ def main() -> None:
     queries = [row for row in rows if row["split"] == "query"]
     if not gallery or not queries:
         parser.error("Manifest must include gallery and query images")
+    gallery_sources = {row.get("source_url", "").strip() for row in gallery}
+    query_sources = {row.get("source_url", "").strip() for row in queries}
+    leaked_sources = (gallery_sources & query_sources) - {""}
+    if leaked_sources:
+        parser.error(
+            f"Manifest has {len(leaked_sources)} exact source URLs in both gallery and query; "
+            "regenerate it with prepare_worldcuisines_research.py"
+        )
     known = {row["dish_id"] for row in gallery}
     queries = [row for row in queries if row["dish_id"] in known]
     if not queries:
@@ -98,7 +106,8 @@ def main() -> None:
         "same_dish_precision_at_k": float(np.mean(precisions)),
         "by_country": group_metrics(queries, hits, top1, precisions, "countries_json"),
         "by_cuisine": group_metrics(queries, hits, top1, precisions, "cuisines_json"),
-        "split_method": "within dish, deterministic random sample seeded in preparation script; single-image dishes excluded",
+        "split_method": "deterministic within-dish random split after excluding every repeated exact source URL globally; single-image dishes excluded",
+        "source_holdout_limit": "Exact source URLs cannot cross splits. Dataset has no creator/uploader IDs, so this is not a creator-held-out evaluation.",
         "warning": "Research retrieval benchmark only; scores are not calibrated confidence or evidence a restaurant serves a dish.",
     }
     args.output.mkdir(parents=True, exist_ok=True)
