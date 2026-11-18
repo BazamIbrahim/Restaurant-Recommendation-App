@@ -176,9 +176,15 @@ def main() -> None:
                 metrics[split]["cosine_knn"] = cosine_knn_score(vectors["train"], train_y, vectors[split], y)
 
     args.output.mkdir(parents=True, exist_ok=True)
+    label_names = [dish_names[dish_id] for dish_id in label_ids]
+    encoder_metadata = {"encoder_model": args.model, "encoder_revision": args.revision}
     joblib.dump({"classifier": classifier, "label_ids": label_ids,
-                 "dish_names": [dish_names[dish_id] for dish_id in label_ids],
-                 "encoder_model": args.model, "encoder_revision": args.revision}, args.output / "classifier.joblib")
+                 "dish_names": label_names, **encoder_metadata}, args.output / "classifier.joblib")
+    knn_index = NearestNeighbors(n_neighbors=min(5, len(train_y)), metric="cosine", algorithm="brute")
+    knn_index.fit(vectors["train"])
+    joblib.dump({"index": knn_index, "train_labels": train_y,
+                 "label_ids": label_ids, "dish_names": label_names,
+                 **encoder_metadata}, args.output / "knn-index.joblib")
     metadata = {
         "encoder": args.model,
         "encoder_revision": args.revision,
