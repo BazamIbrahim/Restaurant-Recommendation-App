@@ -18,6 +18,7 @@ import torch
 from PIL import Image, UnidentifiedImageError
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, f1_score, top_k_accuracy_score
+from sklearn.neighbors import NearestNeighbors
 from transformers import AutoModel, AutoProcessor
 from tqdm.auto import tqdm
 
@@ -104,6 +105,23 @@ def score(model, features: np.ndarray, labels: np.ndarray, names: list[str], spl
     }
 
 
+def cosine_knn_score(train_vectors: np.ndarray, train_labels: np.ndarray,
+                     query_vectors: np.ndarray, query_labels: np.ndarray, k: int = 5) -> dict:
+    neighbors = min(k, len(train_labels))
+    index = NearestNeighbors(n_neighbors=neighbors, metric="cosine", algorithm="brute")
+    index.fit(train_vectors)
+    indices = index.kneighbors(query_vectors, return_distance=False)
+    neighbor_labels = train_labels[indices]
+    relevant = neighbor_labels == query_labels[:, None]
+    return {
+        "metric": "cosine distance over L2-normalized SigLIP 2 embeddings",
+        "k": neighbors,
+        "nearest_neighbor_label_accuracy": float(np.mean(relevant[:, 0])),
+        "same_dish_hit_rate_at_k": float(np.mean(np.any(relevant, axis=1))),
+        "same_dish_precision_at_k": float(np.mean(np.mean(relevant, axis=1))),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("manifest", type=Path, help="CSV manifest; images stay local")
@@ -154,6 +172,8 @@ def main() -> None:
         if group:
             y = np.asarray([label_index[row["dish_id"]] for row in group])
             metrics[split] = score(classifier, vectors[split], y, dish_names_by_index(label_ids, dish_names), split)
+            if split == "test":
+                metrics[split]["cosine_knn"] = cosine_knn_score(vectors["train"], train_y, vectors[split], y)
 
     args.output.mkdir(parents=True, exist_ok=True)
     joblib.dump({"classifier": classifier, "label_ids": label_ids,
