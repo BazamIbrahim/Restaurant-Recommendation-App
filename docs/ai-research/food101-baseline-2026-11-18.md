@@ -29,6 +29,8 @@ Can a frozen multilingual SigLIP 2 image encoder support food identification and
 
 The test sample is balanced at 20 images per class, so macro metrics are meaningful for this small benchmark slice. They are not estimates of production performance.
 
+The run saved `classifier.joblib`, `knn-index.joblib`, and `metrics.json` locally under the Git-ignored `ml/artifacts/food101-research` directory. The local prediction CLI was also run against one held-out image whose true class was apple pie: apple pie ranked first in the classifier output and was the leading KNN dish group. This is a one-image wiring check, not an additional accuracy estimate.
+
 ## Interpretation and limits
 
 1. This validates the code path: SigLIP 2 image features can feed both a supervised label head and a cosine-KNN search.
