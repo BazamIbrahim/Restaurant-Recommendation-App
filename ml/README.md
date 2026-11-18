@@ -31,6 +31,8 @@ The script rejects missing provenance, missing files, and rows not explicitly cl
 
 5. Review test top-1 accuracy, top-5 accuracy, macro F1, and each class's recall, then evaluate by cuisine, country, image source, and capture conditions before showing predictions to users. The script never treats a similarity score as calibrated confidence.
 
+The first research run used 20 examples/class/split and scored 90.94% top-1, 99.21% top-5, and macro F1 0.9082 on its 2,020-image test sample. Cosine KNN at k=5 achieved 96.14% same-dish hit rate. This small Food-101 benchmark result is not an estimate of worldwide or NEMO production performance; see the [full research record](../docs/ai-research/food101-baseline-2026-11-18.md).
+
 The output folder is ignored by Git. It contains a local classifier artifact and metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
 ## Data reality check
