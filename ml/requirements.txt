@@ -1,7 +1,7 @@
 torch>=2.6,<3
 torchvision>=0.21,<1
 transformers>=4.49,<6
+huggingface-hub>=1.31,<3
 scikit-learn>=1.7,<2
 numpy>=2.0,<3
 Pillow>=10,<13
-
