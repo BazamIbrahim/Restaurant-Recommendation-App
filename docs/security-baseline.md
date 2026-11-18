@@ -12,7 +12,7 @@
 
 ## Required configuration before enabling accounts
 
-1. Create a Supabase project and apply the versioned SQL migration in `supabase/migrations/`.
+1. Create a Supabase project and apply the versioned SQL migrations in `supabase/migrations/` in numeric order.
 2. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in an untracked `.env.local` file. A publishable key is expected to be visible in the browser; security depends on RLS and restrictive grants.
 3. In Supabase Auth, keep email confirmation enabled, set the site URL, and allow only the exact local/deployed redirect URLs needed by NEMO.
 4. Review password policy, email sender configuration, abuse/rate limits, and CAPTCHA options before public launch. Test signup, confirmation, login, reset, logout, and account deletion against a non-production project.
@@ -30,4 +30,3 @@
 ## Data rules
 
 Collect only what the feature needs. Do not store raw passwords, payment details, precise location history, or user photos in this prototype. Do not scrape third-party reviews. Track source, license/terms, attribution, field retention, and freshness for every imported restaurant/menu field. User photos must not enter training data without explicit, revocable consent.
-
