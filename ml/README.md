@@ -47,7 +47,7 @@ The first research run used 20 examples/class/split and scored 90.94% top-1, 99.
 
 WorldCuisines adds an image-level-licensed, broader cuisine catalog: 2,414 dish records with country, cuisine, area, aliases, and image-license metadata. The dataset card describes 6,045 images sourced from Wikimedia Commons and licenses the dataset CC BY-SA 4.0; individual image terms are stored in the CSV. This experiment keeps those licenses and attribution URLs alongside the images, filters out unknown/unsupported image licenses, and never uploads or commits the data. [WorldCuisines knowledge base](https://huggingface.co/datasets/worldcuisines/food-kb-v1.1), [WorldCuisines dataset card](https://huggingface.co/datasets/worldcuisines/vqa).
 
-Run the preparation step to download the metadata and approximately 1.79 GB image archive, safely extract the images, and build a deterministic within-dish gallery/query split:
+Run the preparation step to download the metadata and approximately 1.79 GB image archive, safely extract the images, exclude reused exact image URLs across dish labels, and build a deterministic within-dish gallery/query split:
 
 ```powershell
 python ml/prepare_worldcuisines_research.py --extract
@@ -59,7 +59,7 @@ Then evaluate the same pinned SigLIP 2 encoder and cosine KNN by country and cui
 python ml/evaluate_worldcuisines_research.py ml\data\worldcuisines-retrieval.csv --output ml\artifacts\worldcuisines-research
 ```
 
-This is a retrieval benchmark, not a classifier fine-tune: most dish labels have too few images for a robust new classification head. Single-image dish labels are excluded because they cannot form both a gallery and query. Country/cuisine metrics overlap when a dish is associated with multiple places. Results are only research diagnostics; they do not establish menu availability or commercial data rights.
+This is a retrieval benchmark, not a classifier fine-tune: most dish labels have too few images for a robust new classification head. Single-image dish labels are excluded because they cannot form both a gallery and query. The evaluator rejects exact source URLs present in both splits. The dataset has no photographer/uploader IDs, so this is not a creator-held-out test. Country/cuisine metrics overlap when a dish is associated with multiple places. Results are only research diagnostics; they do not establish menu availability or commercial data rights.
 
 The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
