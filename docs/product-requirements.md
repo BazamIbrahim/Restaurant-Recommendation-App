@@ -4,6 +4,12 @@
 
 Help a traveler find a familiar or desired dish in an unfamiliar place, understand why a restaurant is a plausible match, and get there.
 
+## Budget constraint
+
+- The first build must work without paid API usage or a payment card attached to a provider account.
+- Prefer reusable open datasets and direct restaurant contributions. A free quota that requires billing or can incur overage charges is optional, not a required dependency.
+- Google review content is not embedded in the no-budget MVP. Where possible, provide an outbound Google Maps link using venue information NEMO is entitled to use; do not scrape reviews.
+
 ## Market rollout
 
 - **Data discovery scope:** all European countries. Discover and use public datasets and APIs when their licenses/terms allow NEMO's intended use. Track coverage by country and by data type. If a country or field has no reusable source, mark it unavailable rather than inventing or scraping data.
@@ -56,6 +62,7 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 ### Restaurant details, ratings, and reviews
 
 - [ ] Decide whether NEMO displays provider ratings/reviews live, links out, or builds its own first-party review system.
+- [ ] No-budget MVP: use permitted outbound source links or moderated NEMO reviews; do not require a paid review API.
 - [ ] If using Google reviews, request rating/count/reviews through the official Places API and display the required author attribution and source links; do not scrape reviews or store them as NEMO-owned content.
 - [ ] For an EEA-billed Google Maps project, verify whether Places UI Kit supports the desired map and result experience; standard Places API content has EEA map-display restrictions.
 - [ ] Keep provider content separate by source; never merge ratings into a misleading NEMO-wide score.
