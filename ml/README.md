@@ -63,6 +63,19 @@ This is a retrieval benchmark, not a classifier fine-tune: most dish labels have
 
 The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
+## Ireland contributor benchmark
+
+For a more realistic Ireland research check, collect contributor-submitted photos only after recording explicit permission. The [collection protocol](../docs/ai-research/irish-contributor-image-protocol.md) sets a pilot target of 10 dish labels with at least 5 distinct contributors per dish. Keep names/contact details in a restricted consent store; the ML manifest uses pseudonymous contributor IDs. The [intake template](irish-contributor-template.csv) is blank by design.
+
+Prepare contributor-held-out splits and then train the existing frozen encoder baseline:
+
+```powershell
+python ml/prepare_irish_contributor_split.py ml\data\irish-contributors\intake.csv
+python ml/train_classifier.py ml\data\irish-contributors\intake-split.csv --output ml\artifacts\irish-contributors
+```
+
+The splitter requires verified, active permission, a unique source/image ID, and five contributors per dish; it also rejects byte-identical files. It assigns contributors to only one split and requires every dish to be present in train, validation, and test. It does not accept public images without explicit training permission. Keep contributor photos, identity records, and model artifacts outside Git.
+
 ## Data reality check
 
 Food-101 has 101 categories and 101,000 benchmark images, so it is useful for reproducing a research experiment. Its dataset card says the images belong to Foodspotting contributors and use beyond scientific fair use must be negotiated with image owners. **Do not use it for NEMO product training unless those rights are secured.** Its category list also does not represent the full range of meals or regional names NEMO wants to support. Build the product dataset from sources whose image-level rights permit ML training, plus restaurant/creator contributions with explicit permission.
