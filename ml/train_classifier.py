@@ -50,7 +50,7 @@ def load_manifest(path: Path) -> list[dict[str, str]]:
     return rows
 
 
-def encode_rows(rows: list[dict[str, str]], model, processor, device: str, batch_size: int) -> np.ndarray:
+def encode_rows(rows: list[dict[str, str]], model, processor, device: str, batch_size: int, precision: torch.dtype) -> np.ndarray:
     chunks: list[np.ndarray] = []
     for offset in range(0, len(rows), batch_size):
         batch_rows = rows[offset:offset + batch_size]
@@ -62,7 +62,10 @@ def encode_rows(rows: list[dict[str, str]], model, processor, device: str, batch
             except (UnidentifiedImageError, OSError) as exc:
                 raise ValueError(f"Could not decode {row['resolved_image_path']}: {exc}") from exc
         inputs = processor(images=images, return_tensors="pt")
-        inputs = {name: tensor.to(device) for name, tensor in inputs.items()}
+        inputs = {
+            name: tensor.to(device=device, dtype=precision if tensor.is_floating_point() else tensor.dtype)
+            for name, tensor in inputs.items()
+        }
         with torch.inference_mode():
             features = model.get_image_features(**inputs)
             if hasattr(features, "pooler_output"):
@@ -105,7 +108,7 @@ def main() -> None:
     parser.add_argument("manifest", type=Path, help="CSV manifest; images stay local")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--revision", help="Pin a reviewed Hugging Face commit/revision for reproducibility")
-    parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--max-iter", type=int, default=1000)
     parser.add_argument("--output", type=Path, default=Path("ml/artifacts/food-classifier"))
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
@@ -134,8 +137,9 @@ def main() -> None:
     print(f"Loading frozen encoder {args.model} on {args.device}; images are processed locally.")
     options = {"revision": args.revision} if args.revision else {}
     processor = AutoProcessor.from_pretrained(args.model, **options)
-    encoder = AutoModel.from_pretrained(args.model, use_safetensors=True, **options).eval().to(args.device)
-    vectors = {name: encode_rows(group, encoder, processor, args.device, args.batch_size)
+    precision = torch.float16 if args.device.startswith("cuda") else torch.float32
+    encoder = AutoModel.from_pretrained(args.model, use_safetensors=True, **options).eval().to(device=args.device, dtype=precision)
+    vectors = {name: encode_rows(group, encoder, processor, args.device, args.batch_size, precision)
                for name, group in splits.items() if group}
     label_ids = sorted(train_ids)
     label_index = {dish_id: index for index, dish_id in enumerate(label_ids)}
