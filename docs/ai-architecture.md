@@ -34,11 +34,19 @@ KNN's `fit()` step stores the reference vectors and supports neighbor lookup. Th
 
 The reference script is [ml/recommend.py](../ml/recommend.py). It expects a CSV catalog with `image_path`, `dish_name`, `restaurant_id`, and optional `evidence_url`. Its small-catalog KNN rebuilds embeddings each run for clarity; a real service must precompute/cache vectors and use a versioned vector index instead.
 
-## Training plan (later milestone)
+## First training experiment
+
+The repository now includes [ml/train_classifier.py](../ml/train_classifier.py). It encodes explicitly cleared images with frozen SigLIP 2 Base and trains a balanced logistic-regression head over those embeddings. This is a lightweight first supervised experiment, not full encoder fine-tuning. The same embeddings can power the existing cosine-KNN retrieval path.
+
+The manifest requires image path, canonical dish ID/name, fixed split, source URL, license, and an explicit `training_allowed` flag. It rejects rows not marked as cleared and writes the classifier plus per-class metrics locally under the ignored `ml/artifacts/` directory. This flag is a workflow guard, not legal verification. The current app UI remains disconnected from the model.
+
+Food-101 has 101 dishes and 101,000 images, but its image rights permit only scientific fair use absent further permission from image owners. That makes it a research benchmark, not an assumed production-training source. Public visibility or easy download does not establish permission for model training or product use. [Food-101 dataset card and rights notice](https://huggingface.co/datasets/ethz/food101)
+
+## Further training plan
 
 1. Build a rights-cleared dataset of meal images paired with canonical dish IDs, cuisine, language aliases, and source/consent provenance. Include confusing lookalike dishes, varied lighting/angles, and multiple regions. Do not assume public access gives training or commercial rights.
 2. Keep user-uploaded photos out of training unless users separately opt in with revocable consent. The search feature must work without training on its users.
-3. Start with a frozen encoder and measure top-1/top-5 dish retrieval and recall@K for restaurants with verified menu evidence. Split by restaurant and image source, not random images, to reduce leakage.
+3. Run the frozen-encoder classifier experiment and measure top-1/top-5 accuracy and macro F1. For restaurant retrieval, measure recall@K and verified-menu evidence precision. Split by restaurant and image source, not random images, to reduce leakage.
 4. If needed, fine-tune with contrastive image-to-dish/text pairs (SigLIP-style or supervised contrastive loss), initially freezing most layers and training a small projection/adapter. Compare against the unchanged checkpoint on a held-out set across cuisines and languages.
 5. Calibrate abstention thresholds per evaluation slice. Track false “serves this dish” claims, not just image-classification accuracy. Roll back if the model becomes less reliable for any supported cuisine/language group.
 
