@@ -1,0 +1,5 @@
+open_clip_torch>=3.2,<4
+scikit-learn>=1.7,<2
+numpy>=2.0,<3
+Pillow>=10,<13
+
