@@ -4,7 +4,7 @@ NEMO helps travellers find familiar food in unfamiliar places. This repository c
 
 ## Demo status
 
-The current web demo has a responsive discovery screen, typed dish search, local photo preview, illustrative restaurant cards, a map-style preview, and an email/password sign-in interface. Search results and ratings are demonstration content; the photo preview is not connected to an image model; the map graphic is not a live map. Do not present the sample results as verified businesses or ratings.
+The current web demo has a responsive discovery screen, typed dish search, local photo preview, illustrative Dublin restaurant cards, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Dublin's sample listings and map graphic are illustrative. Other markets show an explicit unverified-coverage state and an outbound OpenStreetMap search; they do not display invented restaurant results.
 
 ## Run locally
 
@@ -17,7 +17,7 @@ npm run dev
 
 Open the local URL printed by the command (normally `http://127.0.0.1:5173`). `npm run build` creates a static production bundle in `dist/`.
 
-Guest browsing works without credentials. To enable real sign-in and saved searches, create a Supabase project, apply [`supabase/migrations/0001_nemo_core.sql`](supabase/migrations/0001_nemo_core.sql), copy `.env.example` to `.env.local`, and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. The publishable key is public by design; row-level security protects the database. Never put a Supabase secret/service-role key in a `VITE_` variable or commit `.env.local`. Supabase Auth handles password verification; NEMO does not store passwords. Configure the exact site and redirect URLs in Supabase Auth before testing email confirmation or password reset.
+Guest browsing works without credentials. To enable real sign-in and saved searches, create a Supabase project, apply migrations `0001_nemo_core.sql` and `0002_saved_search_markets.sql` in order, copy `.env.example` to `.env.local`, and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. The publishable key is public by design; row-level security protects the database. Never put a Supabase secret/service-role key in a `VITE_` variable or commit `.env.local`. Supabase Auth handles password verification; NEMO does not store passwords. Configure the exact site and redirect URLs in Supabase Auth before testing email confirmation or password reset.
 
 The demo's `npm run dev` server binds to loopback only, serves a fixed allowlist of built app files, and sends browser security headers. For production hosting, configure equivalent security headers at the hosting provider; see [`docs/security-baseline.md`](docs/security-baseline.md). Do not use the local server as a production server.
 
@@ -30,8 +30,9 @@ The research baseline uses Google SigLIP 2 Base (`google/siglip2-base-patch16-22
 - **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally; AI image search is not connected yet.
 - **Dish search and suggestions:** update the illustrative result cards for the entered dish.
 - **Sort:** toggles between best sample match and closest sample location.
-- **Map pins and directions:** open an OpenStreetMap search for the matching cuisine in Dublin; the map drawing itself is illustrative.
-- **Save search and saved-search icon:** require Supabase configuration and a signed-in account; saved searches are user-scoped by RLS.
+- **Country/capital selector:** lists the current 51-market Europe coverage register. Dublin shows illustrative demo places; other capitals show no verified NEMO listings and offer an external OpenStreetMap search.
+- **Map pins and directions:** in Dublin, open an OpenStreetMap search for the matching cuisine; the map drawing itself is illustrative. Other selected capitals open a place search without implying NEMO coverage.
+- **Save search and saved-search icon:** require Supabase configuration, both migrations, and a signed-in account; saved searches keep their selected country/capital and are user-scoped by RLS.
 - **Log in:** opens email/password sign-in, account creation, and password reset when Supabase is configured. Without it, the dialog explains setup and guest browsing remains available.
 
 ## Repository layout
