@@ -19,6 +19,7 @@ from PIL import Image, UnidentifiedImageError
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, f1_score, top_k_accuracy_score
 from transformers import AutoModel, AutoProcessor
+from tqdm.auto import tqdm
 
 DEFAULT_MODEL = "google/siglip2-base-patch16-224"
 REQUIRED = {"image_path", "dish_id", "dish_name", "split", "source_url", "license", "training_allowed"}
@@ -52,7 +53,7 @@ def load_manifest(path: Path) -> list[dict[str, str]]:
 
 def encode_rows(rows: list[dict[str, str]], model, processor, device: str, batch_size: int, precision: torch.dtype) -> np.ndarray:
     chunks: list[np.ndarray] = []
-    for offset in range(0, len(rows), batch_size):
+    for offset in tqdm(range(0, len(rows), batch_size), desc="Encoding images", unit="batch"):
         batch_rows = rows[offset:offset + batch_size]
         images = []
         for row in batch_rows:
