@@ -63,18 +63,18 @@ This is a retrieval benchmark, not a classifier fine-tune: most dish labels have
 
 The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
-## Ireland contributor benchmark
+## Europe contributor benchmark
 
-For a more realistic Ireland research check, collect contributor-submitted photos only after recording explicit permission. The [collection protocol](../docs/ai-research/irish-contributor-image-protocol.md) sets a pilot target of 10 dish labels with at least 5 distinct contributors per dish. Keep names/contact details in a restricted consent store; the ML manifest uses pseudonymous contributor IDs. The [intake template](irish-contributor-template.csv) is blank by design.
+For a more realistic country-level research check, collect contributor-submitted photos only after recording explicit permission. The [collection protocol](../docs/ai-research/europe-contributor-image-protocol.md) starts evaluation in Ireland while tracking all 51 European and extended-European markets in a [coverage register](../docs/ai-research/europe-food-image-coverage.csv). Each country cohort targets 10 reviewed dish labels and at least 5 distinct contributors per dish. Keep names/contact details in a restricted consent store; the ML manifest uses pseudonymous contributor IDs. The [intake template](contributor-image-template.csv) is country-neutral and blank by design.
 
 Prepare contributor-held-out splits and then train the existing frozen encoder baseline:
 
 ```powershell
-python ml/prepare_irish_contributor_split.py ml\data\irish-contributors\intake.csv
-python ml/train_classifier.py ml\data\irish-contributors\intake-split.csv --output ml\artifacts\irish-contributors
+python ml/prepare_contributor_split.py ml\data\europe-contributors\intake.csv
+python ml/train_classifier.py ml\data\europe-contributors\intake-split.csv --output ml\artifacts\europe-contributors
 ```
 
-The splitter requires verified, active permission, a unique source/image ID, and five contributors per dish; it also rejects byte-identical files. It assigns contributors to only one split and requires every dish to be present in train, validation, and test. It does not accept public images without explicit training permission. Keep contributor photos, identity records, and model artifacts outside Git.
+The splitter requires verified, active permission, a unique source/image ID, an ISO2 country code, and five contributors per dish; it also rejects byte-identical files. It assigns each contributor to only one split and requires every dish to be present in train, validation, and test. It does not accept public images without explicit training permission. Keep contributor photos, identity records, and model artifacts outside Git.
 
 ## Data reality check
 
