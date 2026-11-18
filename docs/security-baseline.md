@@ -6,7 +6,7 @@
 - The browser may use only the Supabase **publishable** key. Keep any secret/service-role key in a trusted server environment; it bypasses row-level security.
 - Row-level security is enabled for profiles, saved places, and saved searches. User-owned rows are restricted to the authenticated user's ID. Public visitors can read only published restaurant/menu rows.
 - Restaurant/menu write access is reserved for a trusted ingestion process. The browser has no table write grant for those tables.
-- Uploaded photos are type/size checked and previewed locally. They are not sent to a server, retained, or used for training in this demo.
+- Uploaded/captured photos are type/size checked and previewed locally. They are not sent to a server, retained, or used for training in this demo. Camera capture is requested only after the user presses **Take a photo**.
 - Search text is length-limited and escaped before rendering. Saved rows use parameterized Supabase client operations.
 - Credentials and build output are excluded by `.gitignore`; use `.env.local` for local values and never commit it.
 

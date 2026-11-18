@@ -16,7 +16,8 @@ const server = createServer(async (request, response) => {
   response.setHeader('X-Content-Type-Options', 'nosniff');
   response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.setHeader('X-Frame-Options', 'DENY');
-  response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // Camera capture is enabled only after the user activates the explicit photo button.
+  response.setHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
   response.setHeader('Content-Security-Policy', "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self' https://*.supabase.co; font-src 'self'");
   if (!file || request.method !== 'GET' && request.method !== 'HEAD') {
     response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });

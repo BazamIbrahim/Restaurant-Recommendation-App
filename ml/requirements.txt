@@ -1,4 +1,5 @@
-open_clip_torch>=3.2,<4
+torch>=2.6,<3
+transformers>=4.49,<6
 scikit-learn>=1.7,<2
 numpy>=2.0,<3
 Pillow>=10,<13

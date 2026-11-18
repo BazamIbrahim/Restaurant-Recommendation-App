@@ -23,7 +23,16 @@ The demo's `npm run dev` server binds to loopback only, serves a fixed allowlist
 
 ## AI model plan
 
-The intended first retrieval prototype uses a pretrained OpenCLIP ViT-B/32 image/text encoder to create vectors, then scikit-learn KNN with cosine distance over a rights-cleared food reference set. Restaurant ranking compares the confirmed food vector with menu-evidence vectors using cosine similarity, then applies geographic and freshness filters. The KNN index is fitted to examples; this is not the same as training/fine-tuning the image encoder. NEMO has not trained a project-specific model. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the reference script in [`ml/recommend.py`](ml/recommend.py). Review each checkpoint and dataset's terms before use.
+The recommended first retrieval baseline is Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) for multilingual image embeddings, followed by scikit-learn KNN with cosine distance over a rights-cleared meal-image catalog. Restaurant ranking joins nearest food examples to verified menu evidence, then applies geographic and freshness filters. The encoder is pretrained; the NEMO-specific model is not trained yet. KNN indexes examples and is not neural-network training. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the reference script in [`ml/recommend.py`](ml/recommend.py).
+
+## Demo control behavior
+
+- **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally; AI image search is not connected yet.
+- **Dish search and suggestions:** update the illustrative result cards for the entered dish.
+- **Sort:** toggles between best sample match and closest sample location.
+- **Map pins and directions:** open an OpenStreetMap search for the matching cuisine in Dublin; the map drawing itself is illustrative.
+- **Save search and saved-search icon:** require Supabase configuration and a signed-in account; saved searches are user-scoped by RLS.
+- **Log in:** opens email/password sign-in, account creation, and password reset when Supabase is configured. Without it, the dialog explains setup and guest browsing remains available.
 
 ## Repository layout
 

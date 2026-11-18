@@ -1,35 +1,52 @@
 # NEMO AI and recommendation design
 
-## Explicit model plan
+## Recommended baseline
 
-| Component | Choice for the prototype | What it does | Training status |
-| --- | --- | --- | --- |
-| Food image/text encoder | OpenCLIP ViT-B/32, pretrained checkpoint selected only after license review | Encodes a food photo and dish/menu text as vectors in a shared representation | Pretrained by its upstream authors; NEMO does not train it yet |
-| Food label classifier | None in the first build | Avoids presenting an unvalidated class label as fact; use encoder similarity plus user confirmation | Not trained |
-| Similar food retrieval | K-nearest neighbors with cosine distance (`scikit-learn` `NearestNeighbors(metric="cosine")`) over embeddings of permitted reference examples | Returns the closest known dish examples and similarity distances | Index is fitted on curated examples; this is retrieval, not gradient-based model training |
-| Restaurant ranking | Cosine similarity between the confirmed dish/photo vector and menu-evidence vectors, then apply distance and data-quality filters | Ranks restaurants with evidence for the requested dish or a clearly labeled related dish | No learned ranker in the prototype |
-| Future project-specific model | Fine-tune an image encoder or train a small food classifier only after obtaining a licensed, representative, labeled dataset | Improve dish recognition across cuisines, photo conditions, and languages | Deferred; requires data rights, evaluation set, and consent decisions |
+**Image/text encoder:** `google/siglip2-base-patch16-224`, using Hugging Face Transformers.
 
-## Request flow
+SigLIP 2 is a pretrained multilingual vision-language encoder. Its model card supports zero-shot image classification and image-text retrieval and lists the checkpoint under Apache-2.0. It is a better starting fit for NEMO's multi-country and multilingual product than the original English-focused OpenCLIP proposal. Benchmark it on permissioned food photos before deciding whether its accuracy and inference cost fit the service. [Google checkpoint card](https://huggingface.co/google/siglip2-base-patch16-224), [Transformers SigLIP 2 retrieval guide](https://huggingface.co/docs/transformers/model_doc/siglip2)
 
-1. The app receives an image locally. The prototype does not upload or retain it.
-2. Inference code produces an L2-normalized image embedding. Typed dish text can be embedded through the same text tower.
-3. KNN returns candidate food examples with cosine distances. NEMO presents candidates as suggestions for user confirmation, not certain identifications.
-4. The confirmed dish is compared with restaurant menu-evidence embeddings. A restaurant must have current menu evidence to be labeled as serving that dish. Cuisine similarity alone is labeled as a related cuisine suggestion.
-5. Geographic distance, freshness, and user filters are applied after similarity. Provider review/rating content is not manufactured or scraped.
+The encoder is **pretrained by Google; NEMO has not trained or fine-tuned it**. At first, use it only to produce image embeddings. The demo UI currently validates photo selection and local preview; it does not call this model.
 
-Cosine similarity is `dot(a,b) / (||a|| * ||b||)` and cosine distance is `1 - similarity`. With unit-normalized vectors, similarity is their dot product. KNN searches the reference vectors; cosine similarity scores candidate matches. They work together but are distinct pieces.
+## Retrieval components
 
-## Demonstration boundaries
+| Component | Method | Role |
+| --- | --- | --- |
+| Food image encoder | SigLIP 2 Base, pretrained; inference only in the initial milestone | Maps an uploaded meal image into a vector. The image is processed in memory and should not be retained by default. |
+| Catalog representation | Same encoder, run offline over rights-cleared menu/meal photos | Stores one normalized vector plus dish, restaurant, source, license, and freshness metadata per permitted example. Precompute; do not re-encode the full catalog for every user request. |
+| Meal retrieval | Exact KNN with cosine distance for the small pilot catalog; approximate nearest-neighbor index when the catalog grows | Finds visually/semantically similar catalog meal examples for the uploaded image. |
+| Restaurant ranking | Aggregate nearest examples by restaurant, then filter/rank by confirmed menu evidence, distance, freshness, and user preferences | Keeps recommendations grounded in a dish/menu record. Similar cuisine alone must be labeled as a related suggestion. |
+| Fine-tuning | Deferred until data is rights-cleared and representative | Improve food-specific retrieval only if the measured baseline misses the pilot's quality threshold. |
 
-- The current UI only previews a chosen photo in the browser. It does not call OpenCLIP or claim image recognition.
-- Restaurant cards are clearly illustrative; ratings, distances, menu items, and match percentages are demo values, not live verified listings.
-- No production model weights or food images are committed to GitHub.
-- Food-101 is a possible research benchmark, not an assumed training source. Review its current terms and image rights for the intended commercial use before downloading, training, or redistributing anything.
-- OpenCLIP checkpoints have checkpoint-specific provenance and terms. Select an exact checkpoint only after reviewing those terms.
-- Do not train on uploaded user photos without specific, revocable consent and a documented deletion path.
+### Similarity math
 
-## Evaluation before launch
+Normalize query vector `q` and each catalog vector `x` to unit length. Cosine similarity is `q · x`; cosine distance is `1 - (q · x)`. `NearestNeighbors(metric="cosine")` returns the smallest distances, so convert with `similarity = 1 - distance` for a readable ranking. This value is **not a probability or calibrated confidence**.
 
-Build a rights-cleared test set stratified by cuisine, dish, language, lighting, occlusion, and image source. Measure top-1/top-5 dish retrieval, recall@K for restaurants with verified menu evidence, calibration/abstention quality, and performance gaps across cuisine groups. Keep a user correction route and allow “not sure” / text search fallback. Set acceptance thresholds before fine-tuning.
+KNN's `fit()` step stores the reference vectors and supports neighbor lookup. That is retrieval/indexing, not training the neural encoder. The project-specific AI is therefore not “trained” until NEMO fine-tunes an encoder or trains a classifier on a curated labeled dataset.
+
+## Request flow when AI is connected
+
+1. The user takes or selects a JPEG/PNG/WebP photo. Validate file type and size on the client; keep it in memory and explain any later server transfer.
+2. The inference service decodes and preprocesses it with the exact SigLIP 2 processor, runs the image tower, and L2-normalizes the embedding.
+3. KNN retrieves the nearest licensed/permissioned meal-image examples. Collapse near-duplicate hits by dish and restaurant; return supporting evidence and similarity score.
+4. Join the candidate restaurant IDs to current menu-evidence and place records. A dish is “served here” only where evidence supports that claim.
+5. Apply distance and user filters; present the nearest matches plus a typed-search/correction fallback. Do not claim the photo itself identifies an exact dish when the retrieval is uncertain.
+
+The reference script is [ml/recommend.py](../ml/recommend.py). It expects a CSV catalog with `image_path`, `dish_name`, `restaurant_id`, and optional `evidence_url`. Its small-catalog KNN rebuilds embeddings each run for clarity; a real service must precompute/cache vectors and use a versioned vector index instead.
+
+## Training plan (later milestone)
+
+1. Build a rights-cleared dataset of meal images paired with canonical dish IDs, cuisine, language aliases, and source/consent provenance. Include confusing lookalike dishes, varied lighting/angles, and multiple regions. Do not assume public access gives training or commercial rights.
+2. Keep user-uploaded photos out of training unless users separately opt in with revocable consent. The search feature must work without training on its users.
+3. Start with a frozen encoder and measure top-1/top-5 dish retrieval and recall@K for restaurants with verified menu evidence. Split by restaurant and image source, not random images, to reduce leakage.
+4. If needed, fine-tune with contrastive image-to-dish/text pairs (SigLIP-style or supervised contrastive loss), initially freezing most layers and training a small projection/adapter. Compare against the unchanged checkpoint on a held-out set across cuisines and languages.
+5. Calibrate abstention thresholds per evaluation slice. Track false “serves this dish” claims, not just image-classification accuracy. Roll back if the model becomes less reliable for any supported cuisine/language group.
+
+## Demo and deployment boundaries
+
+- The photo control only previews the local file; it does not upload, identify, or search with it yet.
+- Restaurant names, distances, and scores in the UI are sample data, not verified places or model output.
+- The model is open weights, but still has real compute, disk, and hosting costs. Downloading weights is not a paid inference API, but NEMO needs hardware to serve them.
+- Do not commit model weights, user photos, embeddings, API secrets, or a production catalog to GitHub.
+- Google/Apple auth, live maps, and real review ratings are not connected by the retrieval model.
 
