@@ -39,6 +39,10 @@ NEMO should own its account records, user preferences, consent records, and firs
 
 The first build should not depend on paid APIs. Start with reusable open place/map data and restaurant-submitted information. For Google reviews, link users to Google Maps rather than scraping or embedding review content. Paid or billing-backed APIs can be added later as optional integrations.
 
+## Core platform needs
+
+NEMO needs a persistent database that the project team controls and the app can access reliably, plus a usable interface for trying the core food-to-restaurant journey and inspecting the data. Start with only the database records and UI screens needed for that first slice. Choose infrastructure with availability, backup, security, and free-tier limits in mind; do not promise 24/7 availability until the selected service and operating budget support it.
+
 ## Current status
 
 The GitHub repository contains NEMO's product and data planning documents. Ireland is the first product validation market, Dublin is the first city, and the project is currently planned for a no-budget start using reusable public data. An application stack has not yet been selected.
