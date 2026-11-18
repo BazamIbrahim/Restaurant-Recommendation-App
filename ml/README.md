@@ -29,7 +29,17 @@ The script rejects missing provenance, missing files, and rows not explicitly cl
    python ml/train_classifier.py ml\data\food101-research.csv --batch-size 4 --output ml\artifacts\food101-research
    ```
 
-5. Review test top-1 accuracy, top-5 accuracy, macro F1, and each class's recall, then evaluate by cuisine, country, image source, and capture conditions before showing predictions to users. The script never treats a similarity score as calibrated confidence.
+   Pin the checkpoint used by the recorded baseline for exact reproduction with `--revision 75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2`.
+
+4. Run the local image predictor against a test photo or another local image:
+
+   ```powershell
+   python ml/predict_food.py path\to\meal.jpg --artifacts ml\artifacts\food101-research
+   ```
+
+   It returns classifier label scores plus nearest cosine-KNN dish examples. Those scores are not calibrated confidence, and the KNN examples are Food-101 images rather than restaurants.
+
+5. Review test top-1 accuracy, top-5 accuracy, macro F1, cosine-KNN hit rate, and each class's recall, then evaluate by cuisine, country, image source, and capture conditions before showing predictions to users. The script never treats a similarity score as calibrated confidence.
 
 The first research run used 20 examples/class/split and scored 90.94% top-1, 99.21% top-5, and macro F1 0.9082 on its 2,020-image test sample. Cosine KNN at k=5 achieved 96.14% same-dish hit rate. This small Food-101 benchmark result is not an estimate of worldwide or NEMO production performance; see the [full research record](../docs/ai-research/food101-baseline-2026-11-18.md).
 
