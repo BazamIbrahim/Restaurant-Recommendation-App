@@ -43,9 +43,26 @@ The script rejects missing provenance, missing files, and rows not explicitly cl
 
 The first research run used 20 examples/class/split and scored 90.94% top-1, 99.21% top-5, and macro F1 0.9082 on its 2,020-image test sample. Cosine KNN at k=5 achieved 96.14% same-dish hit rate. This small Food-101 benchmark result is not an estimate of worldwide or NEMO production performance; see the [full research record](../docs/ai-research/food101-baseline-2026-11-18.md).
 
+## Regional retrieval research
+
+WorldCuisines adds an image-level-licensed, broader cuisine catalog: 2,414 dish records with country, cuisine, area, aliases, and image-license metadata. The dataset card describes 6,045 images sourced from Wikimedia Commons and licenses the dataset CC BY-SA 4.0; individual image terms are stored in the CSV. This experiment keeps those licenses and attribution URLs alongside the images, filters out unknown/unsupported image licenses, and never uploads or commits the data. [WorldCuisines knowledge base](https://huggingface.co/datasets/worldcuisines/food-kb-v1.1), [WorldCuisines dataset card](https://huggingface.co/datasets/worldcuisines/vqa).
+
+Run the preparation step to download the metadata and approximately 1.79 GB image archive, safely extract the images, and build a deterministic within-dish gallery/query split:
+
+```powershell
+python ml/prepare_worldcuisines_research.py --extract
+```
+
+Then evaluate the same pinned SigLIP 2 encoder and cosine KNN by country and cuisine:
+
+```powershell
+python ml/evaluate_worldcuisines_research.py ml\data\worldcuisines-retrieval.csv --output ml\artifacts\worldcuisines-research
+```
+
+This is a retrieval benchmark, not a classifier fine-tune: most dish labels have too few images for a robust new classification head. Single-image dish labels are excluded because they cannot form both a gallery and query. Country/cuisine metrics overlap when a dish is associated with multiple places. Results are only research diagnostics; they do not establish menu availability or commercial data rights.
+
 The output folder is ignored by Git. It contains a local classifier artifact and metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
 ## Data reality check
 
 Food-101 has 101 categories and 101,000 benchmark images, so it is useful for reproducing a research experiment. Its dataset card says the images belong to Foodspotting contributors and use beyond scientific fair use must be negotiated with image owners. **Do not use it for NEMO product training unless those rights are secured.** Its category list also does not represent the full range of meals or regional names NEMO wants to support. Build the product dataset from sources whose image-level rights permit ML training, plus restaurant/creator contributions with explicit permission.
-
