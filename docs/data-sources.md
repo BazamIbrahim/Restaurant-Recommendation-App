@@ -4,6 +4,8 @@ This is a candidate inventory, not blanket authorization to copy every publicly 
 
 NEMO's discovery scope is all European countries. A country or data field is enabled only when a useful source exists and its license/terms allow the intended use. Keep a coverage registry by country and field; mark unsupported coverage clearly when no suitable source is available. Publicly viewable, downloadable, and legally reusable are different conditions.
 
+The current budget is zero for paid APIs. Design the MVP so paid services are optional. A free quota that still requires billing or can incur overages is not considered a zero-cost dependency.
+
 The initial market inventory is in [europe-country-coverage.csv](europe-country-coverage.csv). It uses the UN M49 Europe grouping and separately tracks extended European markets that are sometimes grouped outside Europe in statistical classifications. All source-coverage values start as unverified until we measure real dataset coverage; this avoids treating global availability as proof of local completeness.
 
 ## Candidate sources
@@ -12,7 +14,7 @@ The initial market inventory is in [europe-country-coverage.csv](europe-country-
 |---|---|---|---|
 | Open map and points of interest | [OpenStreetMap (OSM)](https://www.openstreetmap.org/copyright) | Road geometry, addresses and mapped amenities such as restaurants where contributors have added them | OSM data is under ODbL and requires attribution; database use and derived database obligations need review. Public tile and routing servers have separate usage policies; do not assume the community servers are a production backend. |
 | Global open place directory | [Foursquare Open Source Places](https://docs.foursquare.com/data-products/docs/access-fsq-os-places) | Global POIs including restaurants; names, coordinates, addresses, locality, country, categories, freshness/closure dates, phone, and website where available | Free dataset under Apache 2.0 with required Foursquare attribution. Access is through the Places Portal/Iceberg catalog using an account and token. Assess per-country coverage/freshness. It does not provide menus or a review corpus. |
-| Live restaurant discovery and Google reviews | [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) | Search restaurant listings and fetch current business details, aggregate rating/count, and up to five user reviews for a place | Paid API usage varies by requested fields. Attribute each review and link to its Google Maps source. Do not scrape or copy/store Google place content in NEMO's database beyond expressly allowed exceptions. For EEA-billed projects, standard Places API content generally cannot be shown with any map except place ID/coordinates; Google directs map-adjacent place content to Places UI Kit. Validate the UI Kit's fit and current terms before implementation. |
+| Live restaurant discovery and Google reviews | [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) | Search restaurant listings and fetch current business details, aggregate rating/count, and up to five user reviews for a place | Deferred while the budget is zero. Google offers monthly free usage caps per SKU, but API access requires a billing account and overages can cost money. If added later: attribute reviews, link to Google Maps, avoid prohibited storage, and use Places UI Kit for map-adjacent Places content under EEA terms. |
 | Commercial place catalog | [Foursquare Places](https://foursquare.com/products/places/) | Place search/details and, on applicable endpoints, photos/tips | Pay-as-you-go pricing and API license terms apply. Confirm permitted storage, derived data, and review/photo usage for NEMO's exact plan. |
 | Open place directory | [Foursquare Open Source Places](https://docs.foursquare.com/data-products/docs/access-fsq-os-places) | Business names, coordinates, address, locality, country, categories, refreshed/closed dates, phone, and website where available | Free dataset under Apache 2.0 with Foursquare attribution requirements. Access is through the Foursquare Places Portal/Iceberg catalog (account and access token required). It is a POI foundation, not a source of restaurant menus, ratings, or reviews. Verify Ireland coverage and freshness before relying on it. |
 | Business listings and reviews | [Yelp Fusion API](https://docs.developer.yelp.com/docs/getting-started) | Business search and local review content where available | Access and displayed review volume may be limited by API terms and geographic coverage. Confirm display/attribution and retention terms before relying on it. |
@@ -39,13 +41,21 @@ The initial market inventory is in [europe-country-coverage.csv](europe-country-
 - There is no single verified, reusable public dataset covering menus, reviews, and ratings across Europe. Keep menu evidence unavailable unless permissioned restaurant data or another licensed source supports it. For ratings/reviews, use an authorized provider integration or NEMO's own moderated reviews; never scrape review sites.
 - Add a country/region record to a coverage registry with supported fields, source IDs, license/terms, attribution, freshness, and quality status. Enable only country-field combinations that pass the source and quality checks; otherwise return a clear no-coverage state.
 
+### Zero-budget MVP source plan
+
+- Use Foursquare Open Source Places as a candidate global directory and OSM for open geographic data. Both require license compliance and attribution. Foursquare access requires a Places Portal account/token; OSM production tiles and routing need an appropriate service or self-hosted deployment.
+- Add official national open datasets only when their licenses permit the intended reuse. Do not assume every country's portal has restaurant listings.
+- For dish-level matches, start with a NEMO-curated dish taxonomy and restaurant-submitted or permissioned menu evidence. Without menu evidence, show a lower-confidence cuisine/category match or mark dish availability unknown.
+- For Google reviews, provide an outbound Google Maps search/listing link using venue information NEMO is entitled to use. Do not copy review text or ratings from web pages. Later, NEMO can collect moderated first-party reviews or add Google Places when billing is available.
+- Keep paid-provider integrations disabled by default. If Google free quotas are explored later, set hard quotas and alerts first; Google requires a billing account and may bill or stop requests after free thresholds.
+
 ### Capital-first country rollout
 
 For user-facing rollout in each country, start in its capital city. Data-source discovery can happen across Europe in parallel. Record restaurant/place coverage, menu evidence, freshness, language support, and provider rights for each country and area. Once a capital experience meets the product's quality bar, expand coverage to the country's other major areas. Repeat rights and quality checks per country; do not assume they transfer across borders.
 
 ### Ireland pilot source direction
 
-Use a two-layer restaurant strategy: seed and compare base listings from Foursquare Open Source Places and OSM, then use Google Places API for live restaurant details and Google ratings/reviews where its coverage, price, display rules, and caching terms fit. In the Ireland/EEA map flow, evaluate Google Places UI Kit for the display of Google content next to or on a map. Measure country/capital coverage, freshness, duplicates, and closure errors before enabling each country. Use restaurant-submitted or permissioned menus for dish-level evidence. Keep Fáilte Ireland attractions and activities as optional tourism context. Avoid depending on scraped directories or public visibility alone as permission to reuse.
+For the no-budget Ireland pilot, compare Foursquare Open Source Places and OSM as open base sources. Measure country/capital coverage, freshness, duplicates, and closure errors before enabling each country. Use restaurant-submitted or permissioned menus for dish-level evidence; provide an outbound Google Maps search link for reviews. Keep Fáilte Ireland attractions and activities as optional tourism context. Add Google Places API/Places UI Kit only when the project can safely support billing and has reviewed EEA display rules. Avoid scraped directories or public visibility alone as permission to reuse.
 
 ### Google review and restaurant data boundary
 
@@ -61,7 +71,7 @@ Use a two-layer restaurant strategy: seed and compare base listings from Foursqu
 2. **Keep a provider adapter boundary.** Normalize only fields NEMO is allowed to retain. Store provider IDs only when permitted; fetch restricted fields live and render the required attribution/source link.
 3. **Use OSM where its license and coverage fit.** It can provide an open geographic foundation, but completeness and restaurant detail vary by location.
 4. **Use restaurant menu evidence for dish matching.** A cuisine category is not proof that a restaurant serves a particular dish. Prefer licensed menu feeds, restaurant-submitted menus, or links to source menus.
-5. **Treat reviews as source-owned content.** Do not scrape reviews, combine ratings from different scales, or retain reviews/photos without rights. If NEMO later collects its own reviews, keep them clearly labeled and build moderation and abuse handling.
+5. **Treat reviews as source-owned content.** Do not scrape reviews, combine ratings from different scales, or retain reviews/photos without rights. With no API budget, link out to Google Maps or collect clearly labeled NEMO reviews after moderation and abuse handling are ready.
 6. **Use public food datasets for research only after license review.** Public access does not establish commercial training rights or permission to redistribute images.
 
 ## Canonical NEMO-owned records
