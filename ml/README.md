@@ -14,13 +14,19 @@ The script rejects missing provenance, missing files, and rows not explicitly cl
 
 ## Run locally
 
-1. Install Python 3.10+ and a compatible PyTorch build for your CPU/GPU. For GPU training, follow the current PyTorch install selector for the machine's CUDA setup.
-2. From this directory, create an isolated environment and install `-r ml/requirements.txt` from the repository root.
-3. Build a rights-cleared image directory and CSV manifest outside Git. Images are read locally; this script makes no image-upload request. Hugging Face downloads the selected model checkpoint on its first run.
-4. Run:
+1. Install Python 3.11+ and create an isolated environment. Install PyTorch and torchvision for your machine using [PyTorch's official selector](https://pytorch.org/get-started/locally/), then install `-r ml/requirements.txt`. The research workstation for this first run uses PyTorch 2.11 with CUDA 12.8 and torchvision 0.26.
+2. For a quick research benchmark, prepare a balanced Food-101 subset. The script downloads the full dataset, then writes 20 images per class per train/test split (4,040 images total) under Git-ignored `ml/data`:
 
    ```powershell
-   python ml/train_classifier.py path\to\manifest.csv --output ml\artifacts\food-classifier
+   python ml/prepare_food101_research.py --per-class 20
+   ```
+
+   Food-101's dataset card allows scientific fair use; this is a research experiment only, not approval for NEMO deployment or commercial use. It is also not representative of all world cuisines.
+
+3. Run feature extraction and classifier fitting:
+
+   ```powershell
+   python ml/train_classifier.py ml\data\food101-research.csv --batch-size 4 --output ml\artifacts\food101-research
    ```
 
 5. Review test top-1 accuracy, top-5 accuracy, macro F1, and each class's recall, then evaluate by cuisine, country, image source, and capture conditions before showing predictions to users. The script never treats a similarity score as calibrated confidence.
