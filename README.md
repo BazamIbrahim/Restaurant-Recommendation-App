@@ -35,6 +35,10 @@ For planning, "Ireland" means the Republic of Ireland, with Dublin as its first 
 
 NEMO should own its account records, user preferences, consent records, and first-party data it is entitled to collect. External place, review, photo, map, and route data must be treated according to each source's current license and API terms. Do not scrape sites or build a permanent mirror of provider content without explicit rights. Keep provider-backed content in the provider's permitted display flow; only persist identifiers or fields when the applicable terms allow it.
 
+## No-budget starting mode
+
+The first build should not depend on paid APIs. Start with reusable open place/map data and restaurant-submitted information. For Google reviews, link users to Google Maps rather than scraping or embedding review content. Paid or billing-backed APIs can be added later as optional integrations.
+
 ## Current status
 
-The GitHub repository was empty when project work began. This repository currently contains the initial product and data planning documents; an application stack and launch geography have not yet been selected.
+The GitHub repository contains NEMO's product and data planning documents. Ireland is the first product validation market, Dublin is the first city, and the project is currently planned for a no-budget start using reusable public data. An application stack has not yet been selected.
