@@ -61,7 +61,7 @@ python ml/evaluate_worldcuisines_research.py ml\data\worldcuisines-retrieval.csv
 
 This is a retrieval benchmark, not a classifier fine-tune: most dish labels have too few images for a robust new classification head. Single-image dish labels are excluded because they cannot form both a gallery and query. Country/cuisine metrics overlap when a dish is associated with multiple places. Results are only research diagnostics; they do not establish menu availability or commercial data rights.
 
-The output folder is ignored by Git. It contains a local classifier artifact and metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
+The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
 
 ## Data reality check
 
