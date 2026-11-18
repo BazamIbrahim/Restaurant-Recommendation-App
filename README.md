@@ -23,7 +23,7 @@ The demo's `npm run dev` server binds to loopback only, serves a fixed allowlist
 
 ## AI model plan
 
-The recommended first retrieval baseline is Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) for multilingual image embeddings, followed by scikit-learn KNN with cosine distance over a rights-cleared meal-image catalog. Restaurant ranking joins nearest food examples to verified menu evidence, then applies geographic and freshness filters. The encoder is pretrained; the NEMO-specific model is not trained yet. KNN indexes examples and is not neural-network training. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the reference script in [`ml/recommend.py`](ml/recommend.py).
+The research baseline uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as a frozen image encoder and trains a logistic-regression dish classifier on its embeddings. The same embeddings support KNN with cosine distance for visual similarity. We are beginning with a balanced research subset of Food-101; it is not representative of all cuisines and is not cleared for NEMO deployment. Restaurant ranking must join image matches to verified menu evidence. See [`docs/ai-architecture.md`](docs/ai-architecture.md), the [training guide](ml/README.md), and the retrieval reference [`ml/recommend.py`](ml/recommend.py).
 
 ## Demo control behavior
 
