@@ -137,6 +137,21 @@ def main() -> None:
             }
             grouped[row["dish_id"]].append(row)
 
+    # Wikimedia file URLs occasionally appear under multiple dish labels. Drop
+    # every occurrence of a reused URL so an exact image cannot cross splits
+    # (or be counted as evidence for two different dishes).
+    source_counts = Counter(
+        row["source_url"] for dish_rows in grouped.values() for row in dish_rows
+    )
+    duplicate_source_urls = {url for url, count in source_counts.items() if count > 1}
+    duplicate_source_rows_excluded = sum(source_counts[url] for url in duplicate_source_urls)
+    for dish_id in list(grouped):
+        grouped[dish_id] = [
+            row for row in grouped[dish_id] if row["source_url"] not in duplicate_source_urls
+        ]
+        if not grouped[dish_id]:
+            del grouped[dish_id]
+
     eligible_class_count = 0
     singleton_classes = 0
     rng = random.Random(args.seed)
@@ -179,6 +194,8 @@ def main() -> None:
         "dishes_with_zero_eligible_images": len(food_rows) - len(grouped),
         "eligible_dishes_with_gallery_and_query": eligible_class_count,
         "singleton_dishes_excluded_from_retrieval_metrics": singleton_classes,
+        "duplicate_source_urls_excluded": len(duplicate_source_urls),
+        "duplicate_source_rows_excluded": duplicate_source_rows_excluded,
         "paired_images_in_retrieval_manifest": len(examples),
         "gallery_images": sum(row["split"] == "gallery" for row in examples),
         "query_images": sum(row["split"] == "query" for row in examples),
