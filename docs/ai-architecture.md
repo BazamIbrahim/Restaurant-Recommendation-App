@@ -43,6 +43,8 @@ The manifest requires image path, canonical dish ID/name, fixed split, source UR
 
 Food-101 has 101 dishes and 101,000 images. Its dataset card says use beyond scientific fair use must be negotiated with image owners. NEMO is using it for a bounded research benchmark; any deployment or commercial use requires the image-owner permissions first. Its labels are not representative of all countries or regional dishes. [Food-101 dataset card and rights notice](https://huggingface.co/datasets/ethz/food101)
 
+The first benchmark run used 20 images per class for train and test (4,040 images total). The frozen SigLIP 2 embedding classifier scored 90.94% top-1, 99.21% top-5, and 0.9082 macro F1. Cosine KNN at k=5 had 85.84% nearest-neighbor label accuracy and 96.14% same-dish hit rate. These are small-sample benchmark results, not production accuracy or evidence about restaurant menus. See the [full experiment record](ai-research/food101-baseline-2026-11-18.md), including limitations and exact environment.
+
 ## Further training plan
 
 1. After the benchmark, build a representative Europe/world-cuisine dataset of meal images paired with canonical dish IDs, cuisine, language aliases, and source/consent provenance. Include confusing lookalike dishes, varied lighting/angles, and multiple regions. Secure product-use permissions before deployment.
