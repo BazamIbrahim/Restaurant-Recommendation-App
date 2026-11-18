@@ -18,6 +18,8 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 - **Data ingestion scope:** public-data research and ingestion can cover multiple European countries from the start; Ireland-first describes the first end-to-end product validation, not a limit on data discovery.
 - **Boundary:** Northern Ireland is part of the UK, with separate data and regulatory considerations. Include it only if the intended first launch is across the whole island.
 
+The current demo has a selector for all 51 registered European and extended-European country/capital markets. Dublin alone has illustrative sample listings and an illustrative map. Other capitals display an explicit unverified-coverage state and open an outbound OpenStreetMap search. This selector is navigation scaffolding; it does not mean restaurant, menu, rating, review, or map coverage has been verified for those markets.
+
 ## Primary user journey
 
 1. **Set location:** use device location with permission, or let the user search/select a city or neighborhood manually.
