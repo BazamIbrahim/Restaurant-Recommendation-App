@@ -58,5 +58,6 @@ See [`docs/security-baseline.md`](docs/security-baseline.md) for implemented con
 - [Product requirements and coverage checklist](docs/product-requirements.md)
 - [Data sources and reuse constraints](docs/data-sources.md)
 - [AI architecture and training plan](docs/ai-architecture.md)
-- [Ireland contributor image collection protocol](docs/ai-research/irish-contributor-image-protocol.md)
+- [Europe contributor image collection protocol](docs/ai-research/europe-contributor-image-protocol.md)
+- [Europe food image coverage register](docs/ai-research/europe-food-image-coverage.csv)
 - [Europe country coverage register](docs/europe-country-coverage.csv)
