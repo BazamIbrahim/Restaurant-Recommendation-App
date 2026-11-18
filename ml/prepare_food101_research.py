@@ -53,7 +53,7 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(rows)
     print(f"Wrote {len(rows)} research-only image rows to {args.output.resolve()}")
-    print(f"{args.per_class} examples/class/split across {len(Food101.classes)} classes.")
+    print(f"{args.per_class} examples/class/split across {len(dataset.classes)} classes.")
     print("Do not ship this checkpoint or dataset in NEMO without image-owner permissions.")
 
 
