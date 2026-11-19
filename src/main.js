@@ -26,18 +26,20 @@ document.querySelector('#app').innerHTML = `
     <div class="account"><label class="market-picker"><span class="pin" aria-hidden="true">⌖</span><select id="market-select" aria-label="Choose country and capital"></select></label><button class="login-button" id="account-button" type="button">Log in</button><button class="avatar" id="saved-button" type="button" aria-label="View saved searches">♡</button></div>
   </header>
   <main id="discover">
-    <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> NEMO · FOOD FINDER</span><h1>Find the food<br/><em>you miss.</em></h1><p>Take a photo or search by dish.</p></div></section>
+    <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> YOUR FOOD, WHEREVER YOU GO</span><h1>Find a taste<br/><em>of home.</em></h1><p>Show us what you’re craving.</p></div><div class="hero-bowl" aria-hidden="true">🥘</div></section>
     <section class="search-panel" aria-label="Find food"><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">Photo</button><button class="tab" type="button" data-tab="text">Dish name</button></div>
       <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Choose a food photo</strong><small>JPG, PNG, or WebP · max 10 MB</small></span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take photo</span></button></div><div class="model-status" id="model-status" role="status" aria-live="polite">Checking image search…</div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
-      <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label><small class="suggestion-label">TRY A DISH</small><div class="suggestions"><button type="button">Jollof rice</button><button type="button">Ramen</button><button type="button">Arepas</button><button type="button">Pad thai</button></div></div>
+      <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label></div>
       <div class="photo-result hidden" id="photo-result"></div>
     </section>
-    <section class="nearby-section"><div class="nearby-heading"><h2>Nearby</h2><span id="nearby-city">Dublin</span></div><div class="place-list" id="place-list" aria-live="polite"></div><button class="save-search-button nearby-save" id="save-search" type="button">♡ &nbsp; Save this search</button><p class="nearby-note">OpenStreetMap places · menus and reviews aren’t verified here</p></section>
+    <section class="quick-search-section"><div class="section-heading"><h2>Explore a dish</h2><span>Popular searches</span></div><div class="quick-searches"><button type="button">Jollof rice <span>↗</span></button><button type="button">Ramen <span>↗</span></button><button type="button">Arepas <span>↗</span></button><button type="button">Pad thai <span>↗</span></button></div></section>
+    <section class="nearby-section"><div class="nearby-heading"><div><h2>Explore nearby</h2><span id="nearby-city">Dublin</span></div><button class="save-search-button nearby-save" id="save-search" type="button">♡ Save</button></div><div class="place-list" id="place-list" aria-live="polite"></div><p class="nearby-note">Restaurant details open on OpenStreetMap. Menus may vary.</p></section>
   </main>
-  <footer id="how"><a class="brand footer-brand" href="#discover"><span class="brand-mark">n</span><span>NEMO</span></a><p>Find your kind of food, wherever you are.</p><span class="footer-note" id="footer-note">Dublin demo · Sample places and scores only</span></footer>
+  <footer id="how"><a class="brand footer-brand" href="#discover"><span class="brand-mark">n</span><span>NEMO</span></a><p>Find your kind of food, wherever you are.</p><span class="footer-note" id="footer-note">Dublin · OpenStreetMap</span></footer>
   <dialog id="auth-dialog" aria-labelledby="auth-title"><form method="dialog" class="dialog-close"><button aria-label="Close sign-in dialog" type="submit">×</button></form><div class="auth-mark">n</div><span class="eyebrow">WELCOME TO NEMO</span><h2 id="auth-title">Find a taste of home.</h2><p class="auth-copy">Sign in to save your food searches securely.</p><form id="auth-form"><label>Email address<input type="email" id="auth-email" required autocomplete="email" maxlength="254" placeholder="you@example.com"/></label><label>Password<input type="password" id="auth-password" required minlength="8" maxlength="72" autocomplete="current-password" placeholder="At least 8 characters"/></label><button class="auth-submit" type="submit">Continue <span>→</span></button><p id="auth-message" role="status" aria-live="polite"></p></form><div class="auth-links"><button class="auth-toggle" id="auth-toggle" type="button">New to NEMO? <strong>Create an account</strong></button><button class="reset-password" id="reset-password" type="button">Forgot password?</button></div><p class="auth-foot">Supabase handles your password. NEMO does not store it.</p></dialog>
   <dialog id="saved-dialog" aria-labelledby="saved-title"><form method="dialog" class="dialog-close"><button aria-label="Close saved searches" type="submit">×</button></form><span class="eyebrow">YOUR ACCOUNT</span><h2 id="saved-title">Saved searches</h2><div id="saved-list" class="saved-list"></div><p class="auth-foot">Only you can access your saved searches. You can remove them here.</p></dialog>
-  <div id="toast" role="status" aria-live="polite" class="toast"></div>`;
+  <div id="toast" role="status" aria-live="polite" class="toast"></div>
+  <nav class="mobile-nav" aria-label="App navigation"><button class="mobile-nav-active" id="mobile-discover" type="button"><span>⌂</span>Explore</button><button id="mobile-saved" type="button"><span>♡</span>Saved</button><button id="mobile-account" type="button"><span>○</span>Account</button></nav>`;
 
 const $ = (selector) => document.querySelector(selector);
 const authDialog = $('#auth-dialog');
@@ -95,7 +97,8 @@ function renderPlaces() {
   const location = `${selectedMarket.capital}, ${selectedMarket.country}`;
   const searchText = `restaurant ${location}`;
   const mapSearchUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(searchText)}`;
-  $('#place-list').innerHTML = `<a class="public-search-button" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer">Search restaurants in ${escapeHtml(selectedMarket.capital)} <span aria-hidden="true">↗</span></a>`;
+  $('#place-list').innerHTML = `<article class="nearby-card"><div class="nearby-card-icon" aria-hidden="true">⌖</div><div class="nearby-card-copy"><span>DISCOVER YOUR CITY</span><strong>Restaurants in ${escapeHtml(selectedMarket.capital)}</strong><small>Browse public place listings on OpenStreetMap.</small></div><a class="nearby-card-action" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer" aria-label="Explore restaurants in ${escapeHtml(selectedMarket.capital)}">↗</a></article>`;
+  document.querySelectorAll('.quick-searches button').forEach((button) => button.setAttribute('aria-label', `Search for ${button.firstChild.textContent.trim()}`));
 }
 
 function escapeHtml(value) {
@@ -354,9 +357,11 @@ document.querySelectorAll('.tab').forEach((button) => button.addEventListener('c
 
 $('#search-button').addEventListener('click', () => runSearch($('#dish-search').value));
 $('#dish-search').addEventListener('keydown', (event) => { if (event.key === 'Enter') runSearch(event.target.value); });
-document.querySelectorAll('.suggestions button').forEach((button) => button.addEventListener('click', () => {
-  $('#dish-search').value = button.textContent;
-  runSearch(button.textContent);
+document.querySelectorAll('.quick-searches button').forEach((button) => button.addEventListener('click', () => {
+  const dish = button.firstChild.textContent.trim();
+  $('[data-tab="text"]').click();
+  $('#dish-search').value = dish;
+  runSearch(dish);
 }));
 for (const input of [$('#food-photo'), $('#camera-photo')]) {
   input.addEventListener('change', (event) => {
@@ -371,6 +376,23 @@ for (const name of ['dragleave', 'drop']) dropZone.addEventListener(name, (event
 dropZone.addEventListener('drop', (event) => handlePhoto(event.dataTransfer.files?.[0]));
 $('#save-search').addEventListener('click', saveCurrentSearch);
 $('#saved-button').addEventListener('click', loadSavedSearches);
+function setMobileNavActive(activeId) {
+  document.querySelectorAll('.mobile-nav button').forEach((button) => {
+    button.classList.toggle('mobile-nav-active', button.id === activeId);
+  });
+}
+$('#mobile-discover').addEventListener('click', () => {
+  setMobileNavActive('mobile-discover');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+$('#mobile-saved').addEventListener('click', () => {
+  setMobileNavActive('mobile-saved');
+  loadSavedSearches();
+});
+$('#mobile-account').addEventListener('click', () => {
+  setMobileNavActive('mobile-account');
+  $('#account-button').click();
+});
 
 $('#account-button').addEventListener('click', async () => {
   if (session && supabase) {
