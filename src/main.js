@@ -1,15 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import { markets } from './markets.js';
-const demoPlaces = [
-  { id: 'sample-1', name: 'Dosa House · sample', cuisine: 'South Indian · Dosas & street food', area: 'Dublin 2', distance: '0.4 km', score: 94, dishes: ['masala dosa', 'dosa'], price: '€€', color: 'terracotta', icon: '◉' },
-  { id: 'sample-2', name: 'South Spice · sample', cuisine: 'South Indian · Vegetarian', area: 'Dublin 1', distance: '1.2 km', score: 96, dishes: ['masala dosa', 'idli', 'uttapam'], price: '€', color: 'olive', icon: '✳' },
-  { id: 'sample-3', name: 'Olive Table · sample', cuisine: 'Middle Eastern · Vegetarian', area: 'Dublin 1', distance: '0.8 km', score: 89, dishes: ['falafel', 'hummus', 'falafel wrap'], price: '€', color: 'olive', icon: '✳' },
-  { id: 'sample-4', name: 'Jollof Corner · sample', cuisine: 'West African · Homestyle', area: 'Dublin 7', distance: '1.3 km', score: 91, dishes: ['jollof rice', 'suya', 'fried plantain'], price: '€€', color: 'terracotta', icon: '◉' },
-  { id: 'sample-5', name: 'Noodle House · sample', cuisine: 'Japanese · Noodles & broth', area: 'Dublin 2', distance: '1.0 km', score: 90, dishes: ['ramen', 'tonkotsu ramen', 'udon'], price: '€€', color: 'plum', icon: '✦' },
-  { id: 'sample-6', name: 'Arepa Kitchen · sample', cuisine: 'Venezuelan · Street food', area: 'Dublin 8', distance: '1.5 km', score: 92, dishes: ['arepas', 'arepa', 'pabellon'], price: '€€', color: 'olive', icon: '✳' },
-  { id: 'sample-7', name: 'Thai Basil · sample', cuisine: 'Thai · Noodles & curry', area: 'Dublin 4', distance: '1.4 km', score: 93, dishes: ['pad thai', 'green curry', 'som tam'], price: '€€', color: 'terracotta', icon: '◉' },
-];
-
 const config = {
   url: import.meta.env.VITE_SUPABASE_URL,
   key: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
@@ -21,7 +11,6 @@ const supabase = config.url && config.key
   : null;
 
 let query = 'masala dosa';
-let filter = 'Best match';
 let session = null;
 let createMode = false;
 let pendingSave = false;
@@ -44,7 +33,7 @@ document.querySelector('#app').innerHTML = `
       <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label><small class="suggestion-label">TRY A DISH</small><div class="suggestions"><button type="button">Jollof rice</button><button type="button">Ramen</button><button type="button">Arepas</button><button type="button">Pad thai</button></div></div>
       <div class="photo-result hidden" id="photo-result"></div>
     </section>
-    <section class="results-head"><div><span class="eyebrow section-eyebrow" id="result-mode">DUBLIN DEMO SHORTLIST</span><h2>Places that feel familiar <span class="result-count" id="result-count">02</span></h2><p><span id="result-description">Illustrative suggestions for </span><strong id="query-label">Masala dosa</strong><span id="market-context"> · Dublin demo</span></p></div><div class="result-actions"><button class="save-search-button" id="save-search" type="button">♡ <span>Save search</span></button><button class="filter-button" id="filter-button" type="button" aria-label="Change result sorting">☷ &nbsp; <span>Best match</span> <b>⌄</b></button></div></section>
+    <section class="results-head"><div><span class="eyebrow section-eyebrow" id="result-mode">PUBLIC MAP SEARCH</span><h2>Find a taste of home nearby <span class="result-count" id="result-count">—</span></h2><p><span id="result-description">OpenStreetMap place search for </span><strong id="query-label">Masala dosa</strong><span id="market-context"> · Dublin</span></p></div><div class="result-actions"><button class="save-search-button" id="save-search" type="button">♡ <span>Save search</span></button><a class="public-map-shortcut" id="public-map-shortcut" href="https://www.openstreetmap.org/search?query=restaurant%20Dublin%2C%20Ireland" target="_blank" rel="noopener noreferrer">Browse places ↗</a></div></section>
     <section class="results-layout"><div class="place-list" id="place-list" aria-live="polite"></div><aside class="map-card" id="map-card" aria-label="Map preview"><div class="map-label"><span class="live-dot" id="map-dot"></span><span id="map-label">MAP PREVIEW · NOT LIVE</span><span class="map-expand" id="map-expand">DUBLIN</span></div><div class="map-canvas" id="map-canvas"><div class="river"></div><div class="street street-a"></div><div class="street street-b"></div><div class="street street-c"></div><div class="street street-d"></div><div class="block block-a"></div><div class="block block-b"></div><div class="block block-c"></div><div class="block block-d"></div><div class="block block-e"></div><div class="map-park">ST STEPHEN’S<br/>GREEN</div><div id="map-pins"></div><div class="you-pin"><span></span></div><span class="map-text text-one">GRAFTON ST</span><span class="map-text text-two">RIVER LIFFEY</span><span class="map-text text-three">TEMPLE BAR</span><div class="map-credit">Illustration · locations are examples</div></div><div class="map-empty hidden" id="map-empty"><strong>Map preview unavailable</strong><span>Restaurant and map coverage has not been verified for this capital yet.</span></div><div class="map-footer"><span id="map-center"><i class="you-dot"></i> Dublin demo centre</span><a id="map-link" href="https://www.openstreetmap.org/search?query=Dublin%20Ireland" target="_blank" rel="noreferrer">Explore Dublin map ↗</a></div></aside></section>
     <section class="trust-strip"><span>✳ &nbsp;Thoughtful recommendations</span><span>⌖ &nbsp;Built for curious travellers</span><span>♡ &nbsp;Photos stay on your device</span></section>
   </main>
@@ -98,57 +87,36 @@ function showToast(text) {
   window.setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-function mapsSearch(place) {
-  const terms = `${place.cuisine} restaurant ${selectedMarket.capital} ${selectedMarket.country}`;
-  window.open(`https://www.openstreetmap.org/search?query=${encodeURIComponent(terms)}`, '_blank', 'noopener,noreferrer');
-}
-
 function updateMarketInterface() {
   const isDublinDemo = selectedMarket.iso2 === 'IE';
   const marketLabel = `${selectedMarket.capital}, ${selectedMarket.country}`;
-  $('#market-context').textContent = isDublinDemo ? ' · Dublin demo' : ` · ${selectedMarket.capital} coverage not verified`;
-  $('#result-description').textContent = isDublinDemo ? 'Illustrative suggestions for ' : 'No verified NEMO listings for ';
-  $('#result-mode').textContent = isDublinDemo ? 'DUBLIN DEMO SHORTLIST' : 'COUNTRY COVERAGE IN RESEARCH';
+  $('#market-context').textContent = ` · ${selectedMarket.capital}`;
+  $('#result-description').textContent = 'OpenStreetMap place search for ';
+  $('#result-mode').textContent = 'PUBLIC MAP SEARCH';
   $('#map-expand').textContent = selectedMarket.capital.toLocaleUpperCase();
-  $('#map-label').textContent = isDublinDemo ? 'MAP PREVIEW · NOT LIVE' : 'MAP COVERAGE NOT VERIFIED';
-  $('#map-dot').classList.toggle('coverage-pending-dot', !isDublinDemo);
-  $('#map-canvas').classList.toggle('hidden', !isDublinDemo);
-  $('#map-empty').classList.toggle('hidden', isDublinDemo);
-  $('#map-center').innerHTML = `<i class="you-dot"></i> ${isDublinDemo ? 'Dublin demo centre' : escapeHtml(marketLabel)}`;
-  $('#map-link').href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(marketLabel)}`;
-  $('#map-link').textContent = `Explore ${selectedMarket.capital} map ↗`;
-  $('#map-card').setAttribute('aria-label', `${isDublinDemo ? 'Illustrative demo' : 'External map search'} for ${marketLabel}`);
-  $('#footer-note').textContent = isDublinDemo ? 'Dublin demo · Sample places and scores only' : 'Research coverage only · No verified listings';
+  $('#map-label').textContent = 'OPENSTREETMAP · LIVE SEARCH';
+  $('#map-dot').classList.add('coverage-pending-dot');
+  $('#map-canvas').classList.add('hidden');
+  $('#map-empty').classList.remove('hidden');
+  $('#map-empty strong').textContent = 'Explore real places on OpenStreetMap';
+  $('#map-empty span').textContent = 'NEMO does not yet have a verified restaurant and menu database for this city. Open the public map to check nearby places.';
+  $('#map-center').innerHTML = `<i class="you-dot"></i> ${escapeHtml(marketLabel)}`;
+  $('#map-link').href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(`${query} restaurant ${marketLabel}`)}`;
+  $('#map-link').textContent = `Search ${selectedMarket.capital} ↗`;
+  $('#map-card').setAttribute('aria-label', `OpenStreetMap search for ${marketLabel}`);
+  $('#footer-note').textContent = 'Restaurant discovery opens OpenStreetMap · NEMO listings are not verified yet';
   renderPlaces();
 }
 
 function renderPlaces() {
-  const normalizedQuery = query.trim().toLocaleLowerCase();
-  const matched = (selectedMarket.iso2 === 'IE' ? demoPlaces : []).filter((place) => place.dishes.some((dish) => {
-    const normalizedDish = dish.toLocaleLowerCase();
-    return normalizedQuery.includes(normalizedDish) || normalizedDish.includes(normalizedQuery);
-  }));
-  const sorted = matched.sort((a, b) => filter === 'Closest'
-    ? Number.parseFloat(a.distance) - Number.parseFloat(b.distance)
-    : b.score - a.score);
-  $('#result-count').textContent = String(sorted.length).padStart(2, '0');
-  $('#place-list').innerHTML = sorted.length ? sorted.map((place, index) => {
-    const evidenceDish = place.dishes.find((dish) => normalizedQuery.includes(dish) || dish.includes(normalizedQuery)) || place.dishes[0];
-    return `
-    <article class="place-card"><div class="place-thumb ${place.color}" aria-hidden="true"><span>${place.icon}</span><small>${String(index + 1).padStart(2, '0')}</small></div>
-      <div class="place-info"><div class="place-topline"><span class="match-pill">Sample score · ${place.score}%</span><span class="distance">⌖ ${place.distance}</span></div>
-      <h3>${place.name}</h3><p class="cuisine">${place.cuisine}</p><p class="dish-evidence"><span>↗</span> Example menu tag: <strong>${escapeHtml(evidenceDish)}</strong> <i>· sample only</i></p><div class="place-meta"><span>${place.price}</span><span>${place.area}</span></div></div>
-      <button class="directions" type="button" data-place="${demoPlaces.indexOf(place)}" aria-label="Search Maps for ${place.cuisine}">↗</button></article>`;
-  }).join('')
-  : selectedMarket.iso2 === 'IE'
-    ? `<div class="empty-results"><strong>No sample listings for “${escapeHtml(query)}”</strong><p>Try one of the suggested dishes or type a dish included in this Dublin demo.</p></div>`
-    : `<div class="empty-results"><strong>No verified NEMO listings in ${escapeHtml(selectedMarket.capital)} yet</strong><p>This market is in the Europe coverage plan, but restaurant, menu, and review data have not been verified. Use the map link to explore the area.</p></div>`;
-  document.querySelectorAll('.directions').forEach((button) => button.addEventListener('click', () => mapsSearch(demoPlaces[Number(button.dataset.place)])));
-  const pinClasses = ['pin-a', 'pin-b', 'pin-c'];
-  $('#map-pins').innerHTML = selectedMarket.iso2 === 'IE' ? sorted.slice(0, 3).map((place, index) => `
-    <button class="map-pin ${pinClasses[index]}" data-place="${demoPlaces.indexOf(place)}" type="button" aria-label="Search Maps for ${place.cuisine}">${index + 1}</button>`).join('')
-    : '';
-  document.querySelectorAll('#map-pins .map-pin').forEach((button) => button.addEventListener('click', () => mapsSearch(demoPlaces[Number(button.dataset.place)])));
+  const location = `${selectedMarket.capital}, ${selectedMarket.country}`;
+  const searchText = `restaurant ${location}`;
+  const mapSearchUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(searchText)}`;
+  $('#result-count').textContent = '—';
+  $('#place-list').innerHTML = `<div class="public-search-card"><span class="public-search-eyebrow">PUBLIC MAP DATA · OPENSTREETMAP</span><h3>Look for ${escapeHtml(query)} around ${escapeHtml(selectedMarket.capital)}</h3><p>Open the public map to browse nearby restaurant records. Map data may not include menus or reviews, so check with the restaurant before you go.</p><a class="public-search-button" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer">Browse restaurants in ${escapeHtml(selectedMarket.capital)} <span aria-hidden="true">↗</span></a><small>NEMO hasn’t verified these places or confirmed that they serve ${escapeHtml(query)}.</small></div>`;
+  $('#map-link').href = mapSearchUrl;
+  $('#public-map-shortcut').href = mapSearchUrl;
+  $('#map-pins').replaceChildren();
 }
 
 function escapeHtml(value) {
@@ -165,9 +133,7 @@ function runSearch(value) {
   query = cleaned;
   $('#query-label').textContent = query;
   renderPlaces();
-  showToast(selectedMarket.iso2 === 'IE'
-    ? `Showing illustrative demo suggestions for “${query}”.`
-    : `No verified restaurant listings for ${selectedMarket.capital} yet.`);
+  showToast(`Opening public place data for “${query}” in ${selectedMarket.capital}.`);
 }
 
 function resetPhotoPreview() {
@@ -443,13 +409,6 @@ const dropZone = $('#drop-zone');
 for (const name of ['dragenter', 'dragover']) dropZone.addEventListener(name, (event) => { event.preventDefault(); dropZone.classList.add('dragging'); });
 for (const name of ['dragleave', 'drop']) dropZone.addEventListener(name, (event) => { event.preventDefault(); dropZone.classList.remove('dragging'); });
 dropZone.addEventListener('drop', (event) => handlePhoto(event.dataTransfer.files?.[0]));
-$('#filter-button').addEventListener('click', () => {
-  const options = ['Best match', 'Closest'];
-  filter = options[(options.indexOf(filter) + 1) % options.length];
-  $('#filter-button span').textContent = filter;
-  $('#filter-button').setAttribute('aria-label', `Sort results: ${filter}. Activate to change sorting.`);
-  renderPlaces();
-});
 $('#save-search').addEventListener('click', saveCurrentSearch);
 $('#saved-button').addEventListener('click', loadSavedSearches);
 
