@@ -27,12 +27,12 @@ document.querySelector('#app').innerHTML = `
   </header>
   <main id="discover">
     <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> YOUR FOOD, WHEREVER YOU GO</span><h1>Find a taste<br/><em>of home.</em></h1><p>Show us what you’re craving.</p></div><div class="hero-bowl" aria-hidden="true">🥘</div></section>
-    <section class="search-panel" aria-label="Find food"><div class="search-prompt"><strong>What are you looking for?</strong><span>Choose a photo or search by dish.</span></div><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">📷 &nbsp;Photo</button><button class="tab" type="button" data-tab="text">⌕ &nbsp;Dish name</button></div>
+    <section class="search-panel" aria-label="Find food"><div class="search-prompt"><strong>How would you like to find it?</strong><span>Use a photo or search by dish name.</span></div><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">📷 &nbsp;Use a photo</button><button class="tab" type="button" data-tab="text">⌕ &nbsp;Search by dish</button></div>
       <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Upload a food photo</strong><small>Choose from your photos · max 10 MB</small></span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take photo</span></button></div><div class="model-status" id="model-status" role="status" aria-live="polite">Checking image search…</div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
       <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label></div>
       <div class="photo-result hidden" id="photo-result"></div>
     </section>
-    <section class="nearby-section"><div class="nearby-heading"><div><span class="destination-label">YOUR DESTINATION</span><h2>Explore this city</h2><span id="nearby-city">Dublin, Ireland</span></div><button class="save-search-button nearby-save" id="save-search" type="button">♡ Save</button></div><div class="place-list" id="place-list" aria-live="polite"></div><p class="nearby-note">Place details open on OpenStreetMap. Check menus before visiting.</p></section>
+    <section class="nearby-section" id="nearby-section"><div class="nearby-heading"><div><span class="destination-label">YOUR DESTINATION</span><h2>Explore this city</h2><span id="nearby-city">Dublin, Ireland</span></div><button class="save-search-button nearby-save" id="save-search" type="button">♡ Save</button></div><div class="place-list" id="place-list" aria-live="polite"></div><p class="nearby-note">OpenStreetMap results are external. Check the restaurant’s menu before visiting.</p></section>
     <section class="quick-search-section"><div class="section-heading"><h2>Need an idea?</h2><span>Try a dish</span></div><div class="quick-searches"><button type="button">Jollof rice <span>→</span></button><button type="button">Ramen <span>→</span></button><button type="button">Arepas <span>→</span></button><button type="button">Pad thai <span>→</span></button></div></section>
   </main>
   <footer id="how"><a class="brand footer-brand" href="#discover"><span class="brand-mark">n</span><span>NEMO</span></a><p>Find your kind of food, wherever you are.</p><span class="footer-note" id="footer-note">Dublin · OpenStreetMap</span></footer>
@@ -95,9 +95,9 @@ function updateMarketInterface() {
 
 function renderPlaces() {
   const location = `${selectedMarket.capital}, ${selectedMarket.country}`;
-  const searchText = `restaurant ${location}`;
+  const searchText = `${query} restaurant ${location}`;
   const mapSearchUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(searchText)}`;
-  $('#place-list').innerHTML = `<article class="nearby-card"><div class="nearby-card-icon" aria-hidden="true">⌖</div><div class="nearby-card-copy"><span>DISCOVER YOUR CITY</span><strong>Restaurants in ${escapeHtml(selectedMarket.capital)}</strong><small>Browse public place listings on OpenStreetMap.</small></div><a class="nearby-card-action" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer" aria-label="Explore restaurants in ${escapeHtml(selectedMarket.capital)}">↗</a></article>`;
+  $('#place-list').innerHTML = `<article class="nearby-card"><div class="nearby-card-icon" aria-hidden="true">⌖</div><div class="nearby-card-copy"><span>PUBLIC PLACE SEARCH</span><strong>Restaurants in ${escapeHtml(selectedMarket.capital)}</strong><small>Searching for “${escapeHtml(query)}” · OpenStreetMap</small></div><a class="nearby-card-action" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer" aria-label="Open the OpenStreetMap restaurant search">Open map <span aria-hidden="true">↗</span></a></article>`;
   document.querySelectorAll('.quick-searches button').forEach((button) => button.setAttribute('aria-label', `Search for ${button.firstChild.textContent.trim()}`));
 }
 
@@ -113,9 +113,9 @@ function runSearch(value) {
     return;
   }
   query = cleaned;
-  $('#query-label').textContent = query;
   renderPlaces();
-  showToast(`Opening public place data for “${query}” in ${selectedMarket.capital}.`);
+  $('#nearby-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  showToast(`Check the menu before visiting.`);
 }
 
 function resetPhotoPreview() {
