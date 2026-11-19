@@ -27,6 +27,8 @@ let createMode = false;
 let pendingSave = false;
 let recoveryMode = false;
 let previewUrl = null;
+let selectedPhoto = null;
+let researchModelReady = false;
 let selectedMarket = markets.find((market) => market.iso2 === 'IE');
 
 document.querySelector('#app').innerHTML = `
@@ -38,7 +40,7 @@ document.querySelector('#app').innerHTML = `
   <main id="discover">
     <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> A taste of home, wherever you are</span><h1>What are you<br/>craving <em>today?</em></h1><p>Show us a dish you love. We’ll help you find a familiar bite nearby.</p></div><div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="art-plate"><div class="plate-food">🥘</div></div><div class="art-leaf leaf-one">✳</div><div class="art-leaf leaf-two">✦</div><span class="art-note">Good food<br/>brings us home.</span></div></section>
     <section class="search-panel" aria-label="Find food"><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">⌁ &nbsp;Use a photo</button><button class="tab" type="button" data-tab="text">⌕ &nbsp;Search by dish</button></div>
-      <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Choose or drop a food photo</strong><small>JPG, PNG, or WebP · up to 10 MB</small></span><span class="privacy-note">Previewed on this device only</span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take a photo</span></button></div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
+      <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Choose or drop a food photo</strong><small>JPG, PNG, or WebP · up to 10 MB</small></span><span class="privacy-note">Sent to local model only when you search</span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take a photo</span></button></div><div class="model-status" id="model-status" role="status" aria-live="polite">Checking local research model…</div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
       <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label><small class="suggestion-label">TRY A DISH</small><div class="suggestions"><button type="button">Jollof rice</button><button type="button">Ramen</button><button type="button">Arepas</button><button type="button">Pad thai</button></div></div>
       <div class="photo-result hidden" id="photo-result"></div>
     </section>
@@ -66,6 +68,28 @@ marketSelect.addEventListener('change', () => {
   selectedMarket = markets.find((market) => market.iso2 === marketSelect.value) || markets.find((market) => market.iso2 === 'IE');
   updateMarketInterface();
 });
+
+async function loadModelStatus() {
+  const label = $('#model-status');
+  try {
+    const response = await fetch('/api/model-status', { headers: { Accept: 'application/json' } });
+    const status = await response.json();
+    researchModelReady = response.ok && status.ready === true;
+    label.textContent = researchModelReady
+      ? `Research model ready · ${status.classes} Food-101 labels · test top-1 ${(status.top1Accuracy * 100).toFixed(1)}%`
+      : `Image model unavailable · ${status.message || 'start the local research server'}`;
+    label.classList.toggle('model-ready', researchModelReady);
+  } catch {
+    researchModelReady = false;
+    label.textContent = 'Image model unavailable · start NEMO with npm run dev';
+    label.classList.remove('model-ready');
+  }
+  const button = $('#search-image-button');
+  if (button) {
+    button.disabled = !researchModelReady || !selectedPhoto;
+    button.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+  }
+}
 
 function showToast(text) {
   const toast = $('#toast');
@@ -149,8 +173,67 @@ function runSearch(value) {
 function resetPhotoPreview() {
   if (previewUrl) URL.revokeObjectURL(previewUrl);
   previewUrl = null;
+  selectedPhoto = null;
   $('#photo-result').replaceChildren();
   $('#photo-result').classList.add('hidden');
+}
+
+async function searchUploadedImage(file, button, message, results) {
+  button.disabled = true;
+  button.textContent = 'Searching with local model…';
+  message.textContent = 'Running Food-101 classification and cosine-KNN image retrieval locally. This can take a little while.';
+  results.replaceChildren();
+  try {
+    const response = await fetch('/api/search-image', {
+      method: 'POST',
+      headers: { 'Content-Type': file.type },
+      body: file,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Image search failed.');
+    message.textContent = 'Research output only: Food-101 covers 101 benchmark labels. Scores are not calibrated confidence and do not confirm restaurant menus.';
+
+    const predictionTitle = document.createElement('strong');
+    predictionTitle.textContent = 'Possible food labels';
+    results.append(predictionTitle);
+    for (const prediction of data.predictions || []) {
+      const row = document.createElement('div');
+      row.className = 'prediction-row';
+      const name = document.createElement('span');
+      name.textContent = prediction.dish_name;
+      const score = document.createElement('small');
+      score.textContent = `model score ${(prediction.score * 100).toFixed(1)}%`;
+      const useDish = document.createElement('button');
+      useDish.type = 'button';
+      useDish.textContent = 'Search places';
+      useDish.addEventListener('click', () => {
+        $('[data-tab="text"]').click();
+        $('#dish-search').value = prediction.dish_name;
+        runSearch(prediction.dish_name);
+      });
+      row.append(name, score, useDish);
+      results.append(row);
+    }
+
+    const similar = data.cosine_knn_examples || [];
+    if (similar.length) {
+      const similarTitle = document.createElement('strong');
+      similarTitle.className = 'similar-title';
+      similarTitle.textContent = 'Similar Food-101 training labels';
+      results.append(similarTitle);
+      for (const item of similar.slice(0, 3)) {
+        const line = document.createElement('span');
+        line.className = 'similar-row';
+        line.textContent = `${item.dish_name} · ${item.examples} of 5 nearest photos · best cosine similarity ${(item.best_similarity * 100).toFixed(1)}%`;
+        results.append(line);
+      }
+    }
+  } catch (error) {
+    message.textContent = error.message || 'Could not run the local model. Check that NEMO is started with npm run dev.';
+  } finally {
+    button.disabled = !researchModelReady;
+    button.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+  }
 }
 
 function handlePhoto(file) {
@@ -165,6 +248,7 @@ function handlePhoto(file) {
     showToast('That image is over 10 MB. Choose a smaller photo.');
     return;
   }
+  selectedPhoto = file;
   previewUrl = URL.createObjectURL(file);
   const image = document.createElement('img');
   image.src = previewUrl;
@@ -173,17 +257,20 @@ function handlePhoto(file) {
   const heading = document.createElement('strong');
   heading.textContent = 'Photo ready';
   const note = document.createElement('span');
-  note.textContent = 'AI image recognition is not connected in this demo. Your photo has not been uploaded.';
+  note.textContent = 'The photo stays in this browser until you search. Searching sends it only to this device’s local research server; it is not retained.';
   const searchButton = document.createElement('button');
   searchButton.type = 'button';
-  searchButton.textContent = 'Search by dish name instead →';
-  searchButton.addEventListener('click', () => {
-    $('[data-tab="text"]').click();
-    $('#dish-search').focus();
-  });
-  details.append(heading, note, searchButton);
+  searchButton.id = 'search-image-button';
+  searchButton.className = 'image-search-button';
+  searchButton.disabled = !researchModelReady;
+  searchButton.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+  const results = document.createElement('div');
+  results.className = 'image-model-results';
+  searchButton.addEventListener('click', () => searchUploadedImage(file, searchButton, note, results));
+  details.append(heading, note, searchButton, results);
   $('#photo-result').append(image, details);
   $('#photo-result').classList.remove('hidden');
+  loadModelStatus();
 }
 
 async function saveCurrentSearch() {
@@ -422,6 +509,7 @@ $('#reset-password').addEventListener('click', async () => {
 });
 
 updateMarketInterface();
+loadModelStatus();
 if (supabase) {
   supabase.auth.onAuthStateChange((event, nextSession) => {
     session = nextSession;
