@@ -4,7 +4,7 @@ NEMO helps travellers find familiar food in unfamiliar places. This repository c
 
 ## Demo status
 
-The current web demo has a responsive discovery screen, typed dish search, local photo preview, illustrative Dublin restaurant cards, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Dublin's sample listings and map graphic are illustrative. Other markets show an explicit unverified-coverage state and an outbound OpenStreetMap search; they do not display invented restaurant results.
+The current web demo has a responsive discovery screen, typed dish search, local photo preview, a local Food-101 image-search button, illustrative Dublin restaurant cards, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Dublin's sample listings and map graphic are illustrative. Other markets show an explicit unverified-coverage state and an outbound OpenStreetMap search; they do not display invented restaurant results.
 
 ## Run locally
 
@@ -23,11 +23,11 @@ The demo's `npm run dev` server binds to loopback only, serves a fixed allowlist
 
 ## AI model plan
 
-The research baseline uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as a frozen image encoder and trains a logistic-regression dish classifier on its embeddings. The same embeddings support KNN with cosine distance for visual similarity. We are beginning with a balanced research subset of Food-101; it is not representative of all cuisines and is not cleared for NEMO deployment. Restaurant ranking must join image matches to verified menu evidence. See [`docs/ai-architecture.md`](docs/ai-architecture.md), the [training guide](ml/README.md), and the retrieval reference [`ml/recommend.py`](ml/recommend.py).
+The local demo uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as a frozen image encoder, a logistic-regression classifier trained on a balanced Food-101 sample, and cosine KNN for similar benchmark images. Its held-out sample scores 90.94% top-1 and 99.21% top-5 across 101 labels. These are benchmark results, not worldwide accuracy. The image button runs inference through the loopback development server; restaurant cards remain illustrative and must not be treated as model-backed recommendations. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the [training guide](ml/README.md).
 
 ## Demo control behavior
 
-- **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally; AI image search is not connected yet.
+- **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally. **Search this image** sends it to the loopback development server, runs Food-101 classification and cosine-KNN retrieval, shows possible labels, and offers a button to search places with a chosen label. The image is held in a temporary file for inference and deleted afterward; it is not added to training.
 - **Dish search and suggestions:** update the illustrative result cards for the entered dish.
 - **Sort:** toggles between best sample match and closest sample location.
 - **Country/capital selector:** lists the current 51-market Europe coverage register. Dublin shows illustrative demo places; other capitals show no verified NEMO listings and offer an external OpenStreetMap search.
@@ -48,7 +48,7 @@ The research baseline uses Google SigLIP 2 Base (`google/siglip2-base-patch16-22
 
 The data plan is Europe-wide. Dublin is the first end-to-end validation city; expand each country from its capital after data quality and rights are checked. Public visibility does not mean public reuse. Do not scrape Google reviews or copy provider-controlled ratings. With no paid API budget, use appropriately licensed place data, restaurant-submitted menu evidence, NEMO-owned feedback, and outbound map links. Show an unavailable/unknown state where evidence is missing.
 
-The UI is built to show the journey, not to claim integrations that are not connected. Before a real launch, connect a licensed data source, a live map provider, an image inference service or device-side model, backups, account deletion, and security review. A free hosted database tier is suitable for a demo but may pause or lack production-grade backup/availability guarantees; verify the current provider plan before relying on it.
+The image-search endpoint is a local research integration using Food-101's limited label set. Before a real launch, replace it with a securely hosted or device-side model trained and evaluated on appropriately permissioned regional data, connect licensed restaurant/menu sources and a live map provider, and complete backups, account deletion, privacy, and security reviews. A free hosted database tier is suitable for a demo but may pause or lack production-grade backup/availability guarantees; verify the current provider plan before relying on it.
 
 ## Security checklist
 
