@@ -59,25 +59,45 @@ def main() -> None:
 
     k = min(args.top_k, len(knn_data["train_labels"]))
     distances, neighbors = knn_data["index"].kneighbors(vector, n_neighbors=k)
-    grouped: dict[int, dict[str, object]] = defaultdict(lambda: {"examples": 0, "best_similarity": 0.0})
-    for distance, neighbor in zip(distances[0], neighbors[0]):
+    grouped: dict[int, dict[str, object]] = defaultdict(
+        lambda: {"examples": 0, "best_similarity": 0.0, "similarity_total": 0.0, "first_rank": 0}
+    )
+    nearest_neighbors = []
+    for rank, (distance, neighbor) in enumerate(zip(distances[0], neighbors[0]), start=1):
         class_index = int(knn_data["train_labels"][int(neighbor)])
+        similarity = float(1.0 - distance)
         match = grouped[class_index]
         match["examples"] = int(match["examples"]) + 1
-        match["best_similarity"] = max(float(match["best_similarity"]), float(1.0 - distance))
+        match["best_similarity"] = max(float(match["best_similarity"]), similarity)
+        match["similarity_total"] = float(match["similarity_total"]) + similarity
+        if not match["first_rank"]:
+            match["first_rank"] = rank
+        nearest_neighbors.append({
+            "rank": rank,
+            "dish_id": knn_data["label_ids"][class_index],
+            "dish_name": knn_data["dish_names"][class_index],
+            "cosine_similarity": similarity,
+        })
     similar = [
         {"dish_id": knn_data["label_ids"][index],
-         "dish_name": knn_data["dish_names"][index], **values}
+         "dish_name": knn_data["dish_names"][index],
+         "examples": int(values["examples"]),
+         "neighbors_considered": k,
+         "best_similarity": float(values["best_similarity"]),
+         "mean_similarity": float(values["similarity_total"]) / int(values["examples"]),
+         "first_rank": int(values["first_rank"])}
         for index, values in grouped.items()
     ]
-    similar.sort(key=lambda row: (int(row["examples"]), float(row["best_similarity"])), reverse=True)
+    similar.sort(key=lambda row: (
+        int(row["examples"]), float(row["mean_similarity"]), -int(row["first_rank"])
+    ), reverse=True)
     print(json.dumps({
         "scope": "Food-101 research labels only; not calibrated and not restaurant evidence",
         "predictions": predictions,
         "cosine_knn_examples": similar,
+        "nearest_neighbors": nearest_neighbors,
     }, indent=2))
 
 
 if __name__ == "__main__":
     main()
-
