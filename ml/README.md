@@ -61,7 +61,7 @@ python ml/evaluate_worldcuisines_research.py ml\data\worldcuisines-retrieval.csv
 
 This is a retrieval benchmark, not a classifier fine-tune: most dish labels have too few images for a robust new classification head. Single-image dish labels are excluded because they cannot form both a gallery and query. The evaluator rejects exact source URLs present in both splits. The dataset has no photographer/uploader IDs, so this is not a creator-held-out test. Country/cuisine metrics overlap when a dish is associated with multiple places. Results are only research diagnostics; they do not establish menu availability or commercial data rights.
 
-The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The current UI is not connected to this model.
+The output folder is ignored by Git. It contains local evaluation metrics; do not commit weights, datasets, or user photographs. The local demo's **Search this image** button runs this Food-101 classifier and cosine-KNN index through the loopback development server. It does not use the separate WorldCuisines retrieval evaluation or claim that a restaurant serves the predicted dish.
 
 ## Europe contributor benchmark
 
