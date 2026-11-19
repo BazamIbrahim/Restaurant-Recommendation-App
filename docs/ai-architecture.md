@@ -39,7 +39,7 @@ The reference script is [ml/recommend.py](../ml/recommend.py). It expects a CSV 
 
 The repository includes [ml/prepare_food101_research.py](../ml/prepare_food101_research.py) and [ml/train_classifier.py](../ml/train_classifier.py). The preparation script creates a balanced sample from the Food-101 train/test splits; the training script encodes those images with frozen SigLIP 2 Base and fits a balanced logistic-regression head. This is a lightweight supervised research experiment, not full encoder fine-tuning. The same embeddings can power the existing cosine-KNN retrieval path.
 
-The manifest requires image path, canonical dish ID/name, fixed split, source URL, license, and an explicit `training_allowed` flag. It rejects rows not marked as cleared and writes the classifier plus per-class metrics locally under the ignored `ml/artifacts/` directory. This flag is a workflow guard, not legal verification. The current app UI remains disconnected from the model.
+The manifest requires image path, canonical dish ID/name, fixed split, source URL, license, and an explicit `training_allowed` flag. It rejects rows not marked as cleared and writes the classifier plus per-class metrics locally under the ignored `ml/artifacts/` directory. This flag is a workflow guard, not legal verification. The development UI now sends an image to a loopback-only inference endpoint after the user presses **Search this image**; the current classifier recognizes only Food-101's 101 research labels.
 
 Food-101 has 101 dishes and 101,000 images. Its dataset card says use beyond scientific fair use must be negotiated with image owners. NEMO is using it for a bounded research benchmark; any deployment or commercial use requires the image-owner permissions first. Its labels are not representative of all countries or regional dishes. [Food-101 dataset card and rights notice](https://huggingface.co/datasets/ethz/food101)
 
@@ -55,9 +55,8 @@ The first benchmark run used 20 images per class for train and test (4,040 image
 
 ## Demo and deployment boundaries
 
-- The photo control only previews the local file; it does not upload, identify, or search with it yet.
+- The photo control previews locally first. An explicit **Search this image** action sends the file to the local research server, which briefly stages it for inference and deletes the temporary file afterward. This endpoint is only for local research and is not a deployment architecture.
 - Restaurant names, distances, and scores in the UI are sample data, not verified places or model output.
 - The model is open weights, but still has real compute, disk, and hosting costs. Downloading weights is not a paid inference API, but NEMO needs hardware to serve them.
 - Do not commit model weights, user photos, embeddings, API secrets, or a production catalog to GitHub.
 - Google/Apple auth, live maps, and real review ratings are not connected by the retrieval model.
-
