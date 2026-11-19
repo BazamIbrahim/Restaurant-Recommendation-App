@@ -4,7 +4,7 @@ NEMO helps travellers find familiar food in unfamiliar places. This repository c
 
 ## Demo status
 
-The current web demo has a responsive discovery screen, typed dish search, local photo preview, a local Food-101 image-search button, illustrative Dublin restaurant cards, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Dublin's sample listings and map graphic are illustrative. Other markets show an explicit unverified-coverage state and an outbound OpenStreetMap search; they do not display invented restaurant results.
+The current web demo has a responsive discovery screen, typed dish search, local photo preview, a local Food-101 image-search button, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Restaurant discovery links to OpenStreetMap place search; NEMO does not yet claim verified restaurant, menu, review, or rating data. The map graphic remains illustrative and is not used to position restaurant results.
 
 ## Run locally
 
@@ -23,15 +23,14 @@ The demo's `npm run dev` server binds to loopback only, serves a fixed allowlist
 
 ## AI model plan
 
-The local demo uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as a frozen image encoder, a logistic-regression classifier trained on a balanced Food-101 sample, and cosine KNN for similar benchmark images. Its held-out sample scores 90.94% top-1 and 99.21% top-5 across 101 labels. These are benchmark results, not worldwide accuracy. The image button runs inference through the loopback development server; restaurant cards remain illustrative and must not be treated as model-backed recommendations. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the [training guide](ml/README.md).
+The local demo uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as a frozen image encoder, a logistic-regression classifier trained on a balanced Food-101 sample, and cosine KNN for similar benchmark images. Its held-out sample scores 90.94% top-1 and 99.21% top-5 across 101 labels. These are benchmark results, not worldwide accuracy. The image button runs inference through the loopback development server; restaurant discovery opens an external OpenStreetMap search and is not yet joined to verified dish/menu evidence. See [`docs/ai-architecture.md`](docs/ai-architecture.md) and the [training guide](ml/README.md).
 
 ## Demo control behavior
 
 - **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally. **Search this image** sends it to the loopback development server, runs Food-101 classification and cosine-KNN retrieval, shows possible labels, and offers a button to search places with a chosen label. The image is held in a temporary file for inference and deleted afterward; it is not added to training.
-- **Dish search and suggestions:** update the illustrative result cards for the entered dish.
-- **Sort:** toggles between best sample match and closest sample location.
-- **Country/capital selector:** lists the current 51-market Europe coverage register. Dublin shows illustrative demo places; other capitals show no verified NEMO listings and offer an external OpenStreetMap search.
-- **Map pins and directions:** in Dublin, open an OpenStreetMap search for the matching cuisine; the map drawing itself is illustrative. Other selected capitals open a place search without implying NEMO coverage.
+- **Dish search and suggestions:** set the dish label, then open an OpenStreetMap search for restaurant records in the selected capital. The link does not confirm that a restaurant serves the dish.
+- **Country/capital selector:** lists the current 51-market Europe coverage register and builds the public map search for that capital.
+- **Map link:** opens OpenStreetMap. NEMO does not yet have live restaurant records, verified menus, reviews, or ratings; the decorative map is clearly labeled as an illustration.
 - **Save search and saved-search icon:** require Supabase configuration, both migrations, and a signed-in account; saved searches keep their selected country/capital and are user-scoped by RLS.
 - **Log in:** opens email/password sign-in, account creation, and password reset when Supabase is configured. Without it, the dialog explains setup and guest browsing remains available.
 
