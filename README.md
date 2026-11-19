@@ -4,7 +4,7 @@ NEMO helps travellers find familiar food in unfamiliar places. This repository c
 
 ## Demo status
 
-The current web demo has a responsive discovery screen, typed dish search, local photo preview, a local Food-101 image-search button, a country/capital selector for 51 European and extended-European markets, and an email/password sign-in interface. Restaurant discovery links to OpenStreetMap place search; NEMO does not yet claim verified restaurant, menu, review, or rating data. The map graphic remains illustrative and is not used to position restaurant results.
+The current web demo has a simple responsive discovery screen, photo and dish search, a local Food-101 image matcher, a country/capital selector for 51 European and extended-European markets, and email/password sign-in. Restaurant discovery links to OpenStreetMap; NEMO does not yet verify restaurants, menus, reviews, or ratings.
 
 ## Run locally
 
@@ -27,10 +27,9 @@ The local demo uses Google SigLIP 2 Base (`google/siglip2-base-patch16-224`) as 
 
 ## Demo control behavior
 
-- **Photo:** choose/drop an image or tap **Take a photo** on a device with camera capture support. NEMO validates and previews it locally. **Search this image** sends it to the loopback development server, runs Food-101 classification and cosine-KNN retrieval, shows possible labels, and offers a button to search places with a chosen label. The image is held in a temporary file for inference and deleted afterward; it is not added to training.
-- **Dish search and suggestions:** set the dish label, then open an OpenStreetMap search for restaurant records in the selected capital. The link does not confirm that a restaurant serves the dish.
-- **Country/capital selector:** lists the current 51-market Europe coverage register and builds the public map search for that capital.
-- **Map link:** opens OpenStreetMap. NEMO does not yet have live restaurant records, verified menus, reviews, or ratings; the decorative map is clearly labeled as an illustration.
+- **Photo:** choose an image or take a photo. NEMO previews it, shows the closest Food-101 match, and lets the user search nearby. The temporary image is deleted after inference and is not added to training.
+- **Dish search:** type a dish or choose a suggestion, then open an OpenStreetMap restaurant search for the selected capital. The link does not confirm a restaurant serves the dish.
+- **Country/capital selector:** lists the current 51-market Europe coverage register and updates the nearby search.
 - **Save search and saved-search icon:** require Supabase configuration, both migrations, and a signed-in account; saved searches keep their selected country/capital and are user-scoped by RLS.
 - **Log in:** opens email/password sign-in, account creation, and password reset when Supabase is configured. Without it, the dialog explains setup and guest browsing remains available.
 
