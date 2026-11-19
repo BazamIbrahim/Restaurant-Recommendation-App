@@ -180,8 +180,10 @@ function resetPhotoPreview() {
 
 async function searchUploadedImage(file, button, message, results) {
   button.disabled = true;
-  button.textContent = 'Searching with local model…';
-  message.textContent = 'Running Food-101 classification and cosine-KNN image retrieval locally. This can take a little while.';
+  button.classList.add('is-loading');
+  button.innerHTML = '<span class="search-spinner" aria-hidden="true"></span> Comparing food photos…';
+  button.setAttribute('aria-busy', 'true');
+  message.textContent = 'Comparing your photo with labeled food images. This can take a little while.';
   results.replaceChildren();
   try {
     const response = await fetch('/api/search-image', {
@@ -191,48 +193,84 @@ async function searchUploadedImage(file, button, message, results) {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Image search failed.');
-    message.textContent = 'Research output only: Food-101 covers 101 benchmark labels. Scores are not calibrated confidence and do not confirm restaurant menus.';
+    message.textContent = 'Ranked by visual similarity to labeled training photos. Cosine similarity is a comparison score, not certainty; Food-101 covers 101 dishes.';
 
-    const predictionTitle = document.createElement('strong');
-    predictionTitle.textContent = 'Possible food labels';
-    results.append(predictionTitle);
-    for (const prediction of data.predictions || []) {
-      const row = document.createElement('div');
-      row.className = 'prediction-row';
-      const name = document.createElement('span');
-      name.textContent = prediction.dish_name;
-      const score = document.createElement('small');
-      score.textContent = `model score ${(prediction.score * 100).toFixed(1)}%`;
-      const useDish = document.createElement('button');
-      useDish.type = 'button';
-      useDish.textContent = 'Search places';
-      useDish.addEventListener('click', () => {
-        $('[data-tab="text"]').click();
-        $('#dish-search').value = prediction.dish_name;
-        runSearch(prediction.dish_name);
-      });
-      row.append(name, score, useDish);
-      results.append(row);
-    }
+    const visualTitle = document.createElement('strong');
+    visualTitle.className = 'visual-match-title';
+    visualTitle.textContent = 'Closest visual matches';
+    const intro = document.createElement('span');
+    intro.className = 'visual-match-intro';
+    intro.textContent = `Based on the ${data.nearest_neighbors?.length || data.cosine_knn_examples?.[0]?.neighbors_considered || 5} most similar labeled photos`;
+    results.append(visualTitle, intro);
 
     const similar = data.cosine_knn_examples || [];
+    const useDish = (dish) => {
+      $('[data-tab="text"]').click();
+      $('#dish-search').value = dish;
+      runSearch(dish);
+    };
     if (similar.length) {
-      const similarTitle = document.createElement('strong');
-      similarTitle.className = 'similar-title';
-      similarTitle.textContent = 'Similar Food-101 training labels';
-      results.append(similarTitle);
-      for (const item of similar.slice(0, 3)) {
-        const line = document.createElement('span');
-        line.className = 'similar-row';
-        line.textContent = `${item.dish_name} · ${item.examples} of 5 nearest photos · best cosine similarity ${(item.best_similarity * 100).toFixed(1)}%`;
-        results.append(line);
+      for (const [index, item] of similar.slice(0, 3).entries()) {
+        const card = document.createElement('article');
+        card.className = `visual-match-card${index === 0 ? ' visual-match-best' : ''}`;
+        const rank = document.createElement('span');
+        rank.className = 'visual-match-rank';
+        rank.textContent = index === 0 ? 'BEST VISUAL MATCH' : `MATCH ${index + 1}`;
+        const heading = document.createElement('strong');
+        heading.className = 'visual-match-name';
+        heading.textContent = item.dish_name;
+        const evidence = document.createElement('span');
+        evidence.className = 'visual-match-evidence';
+        evidence.textContent = `${item.examples} of ${item.neighbors_considered || 5} nearest photos · closest photo ${(item.best_similarity * 100).toFixed(1)}% similar`;
+        const action = document.createElement('button');
+        action.type = 'button';
+        action.className = 'match-search-button';
+        action.textContent = `Find ${item.dish_name} nearby`;
+        action.addEventListener('click', () => useDish(item.dish_name));
+        card.append(rank, heading, evidence, action);
+        results.append(card);
       }
+    } else {
+      const empty = document.createElement('p');
+      empty.className = 'no-visual-matches';
+      empty.textContent = 'No close photo matches were found in this research dataset. Try a clearer photo or search by dish name.';
+      results.append(empty);
+    }
+
+    const predictions = data.predictions || [];
+    if (predictions.length) {
+      const details = document.createElement('details');
+      details.className = 'classifier-details';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Other model label suggestions';
+      details.append(summary);
+      const note = document.createElement('span');
+      note.className = 'classifier-note';
+      note.textContent = 'Classifier scores are not confidence and are separate from visual-neighbor ranking.';
+      details.append(note);
+      for (const prediction of predictions.slice(0, 5)) {
+        const row = document.createElement('div');
+        row.className = 'prediction-row';
+        const name = document.createElement('span');
+        name.textContent = prediction.dish_name;
+        const score = document.createElement('small');
+        score.textContent = `model score ${(prediction.score * 100).toFixed(1)}%`;
+        const action = document.createElement('button');
+        action.type = 'button';
+        action.textContent = 'Find nearby';
+        action.addEventListener('click', () => useDish(prediction.dish_name));
+        row.append(name, score, action);
+        details.append(row);
+      }
+      results.append(details);
     }
   } catch (error) {
     message.textContent = error.message || 'Could not run the local model. Check that NEMO is started with npm run dev.';
   } finally {
     button.disabled = !researchModelReady;
-    button.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+    button.classList.remove('is-loading');
+    button.removeAttribute('aria-busy');
+    button.textContent = researchModelReady ? '↻  Search again' : 'Local model unavailable';
   }
 }
 
@@ -254,8 +292,10 @@ function handlePhoto(file) {
   image.src = previewUrl;
   image.alt = 'Your selected food photo, previewed on this device';
   const details = document.createElement('div');
+  details.className = 'photo-result-content';
   const heading = document.createElement('strong');
-  heading.textContent = 'Photo ready';
+  heading.textContent = 'Your food photo';
+  heading.className = 'photo-result-heading';
   const note = document.createElement('span');
   note.textContent = 'The photo stays in this browser until you search. Searching sends it only to this device’s local research server; it is not retained.';
   const searchButton = document.createElement('button');
@@ -263,7 +303,8 @@ function handlePhoto(file) {
   searchButton.id = 'search-image-button';
   searchButton.className = 'image-search-button';
   searchButton.disabled = !researchModelReady;
-  searchButton.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+  searchButton.innerHTML = researchModelReady ? '⌕ &nbsp; Find similar dishes' : 'Local model unavailable';
+  searchButton.setAttribute('aria-label', 'Find dishes visually similar to this photo');
   const results = document.createElement('div');
   results.className = 'image-model-results';
   searchButton.addEventListener('click', () => searchUploadedImage(file, searchButton, note, results));
