@@ -18,7 +18,7 @@ Help a traveler find a familiar or desired dish in an unfamiliar place, understa
 - **Data ingestion scope:** public-data research and ingestion can cover multiple European countries from the start; Ireland-first describes the first end-to-end product validation, not a limit on data discovery.
 - **Boundary:** Northern Ireland is part of the UK, with separate data and regulatory considerations. Include it only if the intended first launch is across the whole island.
 
-The current demo has a selector for all 51 registered European and extended-European country/capital markets. Restaurant searches for every selected capital link out to OpenStreetMap place search. NEMO currently has no verified restaurant listings, menu evidence, ratings, reviews, or connected map data for any market; search links do not confirm a dish is served. The decorative map is explicitly an illustration, not a place-result map.
+The current demo has a selector for all 51 registered European and extended-European country/capital markets. Restaurant searches for every selected capital link out to OpenStreetMap place search. NEMO currently has no verified restaurant listings, menu evidence, ratings, reviews, or connected map data for any market; search links do not confirm a dish is served. The demo keeps this limitation in a short note near the search action.
 
 ## Primary user journey
 
