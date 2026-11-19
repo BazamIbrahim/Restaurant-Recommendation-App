@@ -23,19 +23,16 @@ let selectedMarket = markets.find((market) => market.iso2 === 'IE');
 document.querySelector('#app').innerHTML = `
   <header class="topbar">
     <a class="brand" href="#discover" aria-label="NEMO home"><span class="brand-mark">n</span><span>NEMO</span></a>
-    <nav aria-label="Main navigation"><a href="#discover" class="nav-active">Discover</a><a href="#how">How it works</a></nav>
     <div class="account"><label class="market-picker"><span class="pin" aria-hidden="true">⌖</span><select id="market-select" aria-label="Choose country and capital"></select></label><button class="login-button" id="account-button" type="button">Log in</button><button class="avatar" id="saved-button" type="button" aria-label="View saved searches">♡</button></div>
   </header>
   <main id="discover">
-    <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> A taste of home, wherever you are</span><h1>What are you<br/>craving <em>today?</em></h1><p>Show us a dish you love. We’ll help you find a familiar bite nearby.</p></div><div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="art-plate"><div class="plate-food">🥘</div></div><div class="art-leaf leaf-one">✳</div><div class="art-leaf leaf-two">✦</div><span class="art-note">Good food<br/>brings us home.</span></div></section>
-    <section class="search-panel" aria-label="Find food"><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">⌁ &nbsp;Use a photo</button><button class="tab" type="button" data-tab="text">⌕ &nbsp;Search by dish</button></div>
-      <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Choose or drop a food photo</strong><small>JPG, PNG, or WebP · up to 10 MB</small></span><span class="privacy-note">Sent to local model only when you search</span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take a photo</span></button></div><div class="model-status" id="model-status" role="status" aria-live="polite">Checking local research model…</div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
+    <section class="hero"><div class="hero-copy"><span class="eyebrow"><i></i> NEMO · FOOD FINDER</span><h1>Find the food<br/><em>you miss.</em></h1><p>Take a photo or search by dish.</p></div></section>
+    <section class="search-panel" aria-label="Find food"><div class="search-tabs"><button class="tab active" type="button" data-tab="photo">Photo</button><button class="tab" type="button" data-tab="text">Dish name</button></div>
+      <div class="photo-panel" id="photo-panel"><div class="photo-actions"><label class="upload-zone" for="food-photo" id="drop-zone"><span class="upload-icon">↑</span><span><strong>Choose a food photo</strong><small>JPG, PNG, or WebP · max 10 MB</small></span></label><button class="camera-button" id="take-photo" type="button">◎ <span>Take photo</span></button></div><div class="model-status" id="model-status" role="status" aria-live="polite">Checking image search…</div><input id="food-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden /><input id="camera-photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden /></div>
       <div class="text-panel hidden" id="text-panel"><label class="dish-input"><span aria-hidden="true">⌕</span><input id="dish-search" value="masala dosa" maxlength="100" placeholder="Type a dish you love" aria-label="Dish to search"/><button id="search-button" type="button">Find places <span>→</span></button></label><small class="suggestion-label">TRY A DISH</small><div class="suggestions"><button type="button">Jollof rice</button><button type="button">Ramen</button><button type="button">Arepas</button><button type="button">Pad thai</button></div></div>
       <div class="photo-result hidden" id="photo-result"></div>
     </section>
-    <section class="results-head"><div><span class="eyebrow section-eyebrow" id="result-mode">PUBLIC MAP SEARCH</span><h2>Find a taste of home nearby <span class="result-count" id="result-count">—</span></h2><p><span id="result-description">OpenStreetMap place search for </span><strong id="query-label">Masala dosa</strong><span id="market-context"> · Dublin</span></p></div><div class="result-actions"><button class="save-search-button" id="save-search" type="button">♡ <span>Save search</span></button><a class="public-map-shortcut" id="public-map-shortcut" href="https://www.openstreetmap.org/search?query=restaurant%20Dublin%2C%20Ireland" target="_blank" rel="noopener noreferrer">Browse places ↗</a></div></section>
-    <section class="results-layout"><div class="place-list" id="place-list" aria-live="polite"></div><aside class="map-card" id="map-card" aria-label="Map preview"><div class="map-label"><span class="live-dot" id="map-dot"></span><span id="map-label">MAP PREVIEW · NOT LIVE</span><span class="map-expand" id="map-expand">DUBLIN</span></div><div class="map-canvas" id="map-canvas"><div class="river"></div><div class="street street-a"></div><div class="street street-b"></div><div class="street street-c"></div><div class="street street-d"></div><div class="block block-a"></div><div class="block block-b"></div><div class="block block-c"></div><div class="block block-d"></div><div class="block block-e"></div><div class="map-park">ST STEPHEN’S<br/>GREEN</div><div id="map-pins"></div><div class="you-pin"><span></span></div><span class="map-text text-one">GRAFTON ST</span><span class="map-text text-two">RIVER LIFFEY</span><span class="map-text text-three">TEMPLE BAR</span><div class="map-credit">Illustration · locations are examples</div></div><div class="map-empty hidden" id="map-empty"><strong>Map preview unavailable</strong><span>Restaurant and map coverage has not been verified for this capital yet.</span></div><div class="map-footer"><span id="map-center"><i class="you-dot"></i> Dublin demo centre</span><a id="map-link" href="https://www.openstreetmap.org/search?query=Dublin%20Ireland" target="_blank" rel="noreferrer">Explore Dublin map ↗</a></div></aside></section>
-    <section class="trust-strip"><span>✳ &nbsp;Thoughtful recommendations</span><span>⌖ &nbsp;Built for curious travellers</span><span>♡ &nbsp;Photos stay on your device</span></section>
+    <section class="nearby-section"><div class="nearby-heading"><h2>Nearby</h2><span id="nearby-city">Dublin</span></div><div class="place-list" id="place-list" aria-live="polite"></div><button class="save-search-button nearby-save" id="save-search" type="button">♡ &nbsp; Save this search</button><p class="nearby-note">OpenStreetMap places · menus and reviews aren’t verified here</p></section>
   </main>
   <footer id="how"><a class="brand footer-brand" href="#discover"><span class="brand-mark">n</span><span>NEMO</span></a><p>Find your kind of food, wherever you are.</p><span class="footer-note" id="footer-note">Dublin demo · Sample places and scores only</span></footer>
   <dialog id="auth-dialog" aria-labelledby="auth-title"><form method="dialog" class="dialog-close"><button aria-label="Close sign-in dialog" type="submit">×</button></form><div class="auth-mark">n</div><span class="eyebrow">WELCOME TO NEMO</span><h2 id="auth-title">Find a taste of home.</h2><p class="auth-copy">Sign in to save your food searches securely.</p><form id="auth-form"><label>Email address<input type="email" id="auth-email" required autocomplete="email" maxlength="254" placeholder="you@example.com"/></label><label>Password<input type="password" id="auth-password" required minlength="8" maxlength="72" autocomplete="current-password" placeholder="At least 8 characters"/></label><button class="auth-submit" type="submit">Continue <span>→</span></button><p id="auth-message" role="status" aria-live="polite"></p></form><div class="auth-links"><button class="auth-toggle" id="auth-toggle" type="button">New to NEMO? <strong>Create an account</strong></button><button class="reset-password" id="reset-password" type="button">Forgot password?</button></div><p class="auth-foot">Supabase handles your password. NEMO does not store it.</p></dialog>
@@ -49,7 +46,7 @@ const marketSelect = $('#market-select');
 for (const market of markets) {
   const option = document.createElement('option');
   option.value = market.iso2;
-  option.textContent = `${market.country} — ${market.capital}`;
+  option.textContent = `${market.country} · ${market.capital}`;
   marketSelect.append(option);
 }
 marketSelect.value = selectedMarket.iso2;
@@ -65,18 +62,18 @@ async function loadModelStatus() {
     const status = await response.json();
     researchModelReady = response.ok && status.ready === true;
     label.textContent = researchModelReady
-      ? `Research model ready · ${status.classes} Food-101 labels · test top-1 ${(status.top1Accuracy * 100).toFixed(1)}%`
-      : `Image model unavailable · ${status.message || 'start the local research server'}`;
+      ? 'Image search ready'
+      : 'Image search unavailable';
     label.classList.toggle('model-ready', researchModelReady);
   } catch {
     researchModelReady = false;
-    label.textContent = 'Image model unavailable · start NEMO with npm run dev';
+    label.textContent = 'Image search unavailable';
     label.classList.remove('model-ready');
   }
   const button = $('#search-image-button');
   if (button) {
     button.disabled = !researchModelReady || !selectedPhoto;
-    button.textContent = researchModelReady ? 'Search this image' : 'Local model unavailable';
+    button.textContent = researchModelReady ? 'Find similar dishes' : 'Search unavailable';
   }
 }
 
@@ -88,23 +85,9 @@ function showToast(text) {
 }
 
 function updateMarketInterface() {
-  const isDublinDemo = selectedMarket.iso2 === 'IE';
   const marketLabel = `${selectedMarket.capital}, ${selectedMarket.country}`;
-  $('#market-context').textContent = ` · ${selectedMarket.capital}`;
-  $('#result-description').textContent = 'OpenStreetMap place search for ';
-  $('#result-mode').textContent = 'PUBLIC MAP SEARCH';
-  $('#map-expand').textContent = selectedMarket.capital.toLocaleUpperCase();
-  $('#map-label').textContent = 'OPENSTREETMAP · LIVE SEARCH';
-  $('#map-dot').classList.add('coverage-pending-dot');
-  $('#map-canvas').classList.add('hidden');
-  $('#map-empty').classList.remove('hidden');
-  $('#map-empty strong').textContent = 'Explore real places on OpenStreetMap';
-  $('#map-empty span').textContent = 'NEMO does not yet have a verified restaurant and menu database for this city. Open the public map to check nearby places.';
-  $('#map-center').innerHTML = `<i class="you-dot"></i> ${escapeHtml(marketLabel)}`;
-  $('#map-link').href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(`${query} restaurant ${marketLabel}`)}`;
-  $('#map-link').textContent = `Search ${selectedMarket.capital} ↗`;
-  $('#map-card').setAttribute('aria-label', `OpenStreetMap search for ${marketLabel}`);
-  $('#footer-note').textContent = 'Restaurant discovery opens OpenStreetMap · NEMO listings are not verified yet';
+  $('#nearby-city').textContent = selectedMarket.capital;
+  $('#footer-note').textContent = `${marketLabel} · Powered by OpenStreetMap`;
   renderPlaces();
 }
 
@@ -112,11 +95,7 @@ function renderPlaces() {
   const location = `${selectedMarket.capital}, ${selectedMarket.country}`;
   const searchText = `restaurant ${location}`;
   const mapSearchUrl = `https://www.openstreetmap.org/search?query=${encodeURIComponent(searchText)}`;
-  $('#result-count').textContent = '—';
-  $('#place-list').innerHTML = `<div class="public-search-card"><span class="public-search-eyebrow">PUBLIC MAP DATA · OPENSTREETMAP</span><h3>Look for ${escapeHtml(query)} around ${escapeHtml(selectedMarket.capital)}</h3><p>Open the public map to browse nearby restaurant records. Map data may not include menus or reviews, so check with the restaurant before you go.</p><a class="public-search-button" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer">Browse restaurants in ${escapeHtml(selectedMarket.capital)} <span aria-hidden="true">↗</span></a><small>NEMO hasn’t verified these places or confirmed that they serve ${escapeHtml(query)}.</small></div>`;
-  $('#map-link').href = mapSearchUrl;
-  $('#public-map-shortcut').href = mapSearchUrl;
-  $('#map-pins').replaceChildren();
+  $('#place-list').innerHTML = `<a class="public-search-button" href="${mapSearchUrl}" target="_blank" rel="noopener noreferrer">Search restaurants in ${escapeHtml(selectedMarket.capital)} <span aria-hidden="true">↗</span></a>`;
 }
 
 function escapeHtml(value) {
@@ -159,15 +138,7 @@ async function searchUploadedImage(file, button, message, results) {
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Image search failed.');
-    message.textContent = 'Ranked by visual similarity to labeled training photos. Cosine similarity is a comparison score, not certainty; Food-101 covers 101 dishes.';
-
-    const visualTitle = document.createElement('strong');
-    visualTitle.className = 'visual-match-title';
-    visualTitle.textContent = 'Closest visual matches';
-    const intro = document.createElement('span');
-    intro.className = 'visual-match-intro';
-    intro.textContent = `Based on the ${data.nearest_neighbors?.length || data.cosine_knn_examples?.[0]?.neighbors_considered || 5} most similar labeled photos`;
-    results.append(visualTitle, intro);
+    message.textContent = 'Photo matched. Choose a dish to look for nearby.';
 
     const similar = data.cosine_knn_examples || [];
     const useDish = (dish) => {
@@ -176,25 +147,41 @@ async function searchUploadedImage(file, button, message, results) {
       runSearch(dish);
     };
     if (similar.length) {
-      for (const [index, item] of similar.slice(0, 3).entries()) {
+      const [bestMatch, ...otherMatches] = similar;
+      for (const [index, item] of [bestMatch].entries()) {
         const card = document.createElement('article');
         card.className = `visual-match-card${index === 0 ? ' visual-match-best' : ''}`;
         const rank = document.createElement('span');
         rank.className = 'visual-match-rank';
-        rank.textContent = index === 0 ? 'BEST VISUAL MATCH' : `MATCH ${index + 1}`;
+        rank.textContent = 'POSSIBLE MATCH';
         const heading = document.createElement('strong');
         heading.className = 'visual-match-name';
         heading.textContent = item.dish_name;
         const evidence = document.createElement('span');
         evidence.className = 'visual-match-evidence';
-        evidence.textContent = `${item.examples} of ${item.neighbors_considered || 5} nearest photos · closest photo ${(item.best_similarity * 100).toFixed(1)}% similar`;
+        evidence.textContent = `Found in ${item.examples} of ${item.neighbors_considered || 5} similar photos`;
         const action = document.createElement('button');
         action.type = 'button';
         action.className = 'match-search-button';
-        action.textContent = `Find ${item.dish_name} nearby`;
+        action.textContent = 'Find restaurants';
         action.addEventListener('click', () => useDish(item.dish_name));
         card.append(rank, heading, evidence, action);
         results.append(card);
+      }
+      if (otherMatches.length) {
+        const alternatives = document.createElement('details');
+        alternatives.className = 'alternative-matches';
+        const summary = document.createElement('summary');
+        summary.textContent = 'See other matches';
+        alternatives.append(summary);
+        for (const item of otherMatches.slice(0, 2)) {
+          const option = document.createElement('button');
+          option.type = 'button';
+          option.textContent = item.dish_name;
+          option.addEventListener('click', () => useDish(item.dish_name));
+          alternatives.append(option);
+        }
+        results.append(alternatives);
       }
     } else {
       const empty = document.createElement('p');
@@ -203,40 +190,13 @@ async function searchUploadedImage(file, button, message, results) {
       results.append(empty);
     }
 
-    const predictions = data.predictions || [];
-    if (predictions.length) {
-      const details = document.createElement('details');
-      details.className = 'classifier-details';
-      const summary = document.createElement('summary');
-      summary.textContent = 'Other model label suggestions';
-      details.append(summary);
-      const note = document.createElement('span');
-      note.className = 'classifier-note';
-      note.textContent = 'Classifier scores are not confidence and are separate from visual-neighbor ranking.';
-      details.append(note);
-      for (const prediction of predictions.slice(0, 5)) {
-        const row = document.createElement('div');
-        row.className = 'prediction-row';
-        const name = document.createElement('span');
-        name.textContent = prediction.dish_name;
-        const score = document.createElement('small');
-        score.textContent = `model score ${(prediction.score * 100).toFixed(1)}%`;
-        const action = document.createElement('button');
-        action.type = 'button';
-        action.textContent = 'Find nearby';
-        action.addEventListener('click', () => useDish(prediction.dish_name));
-        row.append(name, score, action);
-        details.append(row);
-      }
-      results.append(details);
-    }
   } catch (error) {
     message.textContent = error.message || 'Could not run the local model. Check that NEMO is started with npm run dev.';
   } finally {
     button.disabled = !researchModelReady;
     button.classList.remove('is-loading');
     button.removeAttribute('aria-busy');
-    button.textContent = researchModelReady ? '↻  Search again' : 'Local model unavailable';
+    button.textContent = researchModelReady ? '↻  Search again' : 'Search unavailable';
   }
 }
 
@@ -263,13 +223,13 @@ function handlePhoto(file) {
   heading.textContent = 'Your food photo';
   heading.className = 'photo-result-heading';
   const note = document.createElement('span');
-  note.textContent = 'The photo stays in this browser until you search. Searching sends it only to this device’s local research server; it is not retained.';
+  note.textContent = 'Your photo is deleted after matching.';
   const searchButton = document.createElement('button');
   searchButton.type = 'button';
   searchButton.id = 'search-image-button';
   searchButton.className = 'image-search-button';
   searchButton.disabled = !researchModelReady;
-  searchButton.innerHTML = researchModelReady ? '⌕ &nbsp; Find similar dishes' : 'Local model unavailable';
+  searchButton.innerHTML = researchModelReady ? '⌕ &nbsp; Find similar dishes' : 'Search unavailable';
   searchButton.setAttribute('aria-label', 'Find dishes visually similar to this photo');
   const results = document.createElement('div');
   results.className = 'image-model-results';
